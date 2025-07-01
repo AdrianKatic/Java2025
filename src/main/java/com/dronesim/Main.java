@@ -4,8 +4,6 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
-import com.dronesim.api.ApiClient;
-import com.dronesim.api.ApiConfig;
 import com.dronesim.viewer.gui.dialogs.TokenLoginDialog;
 import com.dronesim.viewer.gui.frame.MainFrame;
 
@@ -27,11 +25,6 @@ public class Main {
                     JOptionPane.showMessageDialog(null, "Token oder URL nicht eingegeben.");
                     System.exit(0);
                 }
-
-                // Verbindung testen
-                ApiConfig config = new ApiConfig(url, token);
-                ApiClient api = new ApiClient(config);
-                api.testConnection(); // Optional: Testverbindung
 
                 // GUI starten
                 MainFrame app = new MainFrame();

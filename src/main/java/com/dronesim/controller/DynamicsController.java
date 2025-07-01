@@ -7,16 +7,16 @@ import javax.swing.SwingWorker;
 
 import com.dronesim.model.DroneDynamics;
 import com.dronesim.model.PagedDataProvider;
-import com.dronesim.viewer.gui.paging.DronePaginationPanel;
+import com.dronesim.viewer.gui.paging.DronePaginationView;
 
 public class DynamicsController {
     private final PagedDataProvider<DroneDynamics> provider;
-    private final DronePaginationPanel panel;
+    private final DronePaginationView<DroneDynamics> view;
     private final int PAGE_SIZE = 10;
 
-    public DynamicsController(PagedDataProvider<DroneDynamics> provider, DronePaginationPanel panel) {
+    public DynamicsController(PagedDataProvider<DroneDynamics> provider, DronePaginationView<DroneDynamics> view) {
         this.provider = provider;
-        this.panel = panel;
+        this.view = view;
     }
 
     public void loadPage(int page) {
@@ -44,7 +44,7 @@ public class DynamicsController {
                 try {
                     List<DroneDynamics> data = get();
                     if (data.isEmpty() && page != 0) return;
-                    panel.updatePage(data, page, PAGE_SIZE);
+                    view.updatePage(data, page, PAGE_SIZE);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -88,8 +88,65 @@
 // }
 package com.dronesim.viewer.gui.paging;
 
-import java.util.List;
+import java.awt.FlowLayout;
+import java.awt.event.ActionListener;
 
-public interface DronePaginationPanel<T> {
-    void updatePage(List<T> entries, int currentPage, int pageSize);
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+/**
+ * Wiederverwendbares Panel mit "< Page X >"-Steuerung.
+ * Delegiert die Seitenwechsel-Logik an die aufrufende Komponente.
+ */
+public class PagingControlPanel extends JPanel {
+
+    private final JButton prevButton;
+    private final JButton nextButton;
+    private final JLabel pageLabel;
+
+    private int currentPage = 0;
+
+    public PagingControlPanel(ActionListener onPrev, ActionListener onNext) {
+        setLayout(new FlowLayout(FlowLayout.CENTER));
+
+        prevButton = new JButton("<");
+        nextButton = new JButton(">");
+        pageLabel = new JLabel("Page 1");
+
+        prevButton.addActionListener(onPrev);
+        nextButton.addActionListener(onNext);
+
+        add(prevButton);
+        add(pageLabel);
+        add(nextButton);
+
+        updateControls(false); // initial
+    }
+
+    public void setCurrentPage(int pageNumber) {
+        this.currentPage = pageNumber;
+        pageLabel.setText("Page " + (pageNumber + 1));
+    }
+
+    public void updateControls(boolean hasNextPage) {
+        prevButton.setEnabled(currentPage > 0);
+        nextButton.setEnabled(hasNextPage);
+    }
+
+    public int getCurrentPage() {
+        return currentPage;
+    }
+
+    public void incrementPage() {
+        currentPage++;
+        setCurrentPage(currentPage);
+    }
+
+    public void decrementPage() {
+        if (currentPage > 0) {
+            currentPage--;
+            setCurrentPage(currentPage);
+        }
+    }
 }

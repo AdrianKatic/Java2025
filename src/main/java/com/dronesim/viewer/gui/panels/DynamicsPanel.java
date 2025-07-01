@@ -122,9 +122,9 @@ import com.dronesim.controller.DynamicsController;
 import com.dronesim.model.DroneDynamics;
 import com.dronesim.model.PagedDataProvider;
 import com.dronesim.viewer.gui.components.DroneDynamicsCard;
-import com.dronesim.viewer.gui.paging.DronePaginationPanel;
+import com.dronesim.viewer.gui.paging.DronePaginationView;
 
-public class DynamicsPanel extends JPanel implements DronePaginationPanel<DroneDynamics> {
+public class DynamicsPanel extends JPanel implements DronePaginationView<DroneDynamics> {
 
     private final JPanel cardContainer;
     private final JLabel pageLabel;

@@ -58,7 +58,7 @@ public class TokenLoginDialog extends JDialog {
 
         okBtn.addActionListener(e -> {
             confirmed = true;
-            if (saveBox.isSelected()) ApiConfig.overrideAndSave(getToken(),getUrl());
+            if (saveBox.isSelected()) ApiConfig.overrideAndSave(getUrl(),getToken());
             dispose();
         });
 
