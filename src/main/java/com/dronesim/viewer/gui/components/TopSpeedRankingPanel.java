@@ -41,7 +41,7 @@ public class TopSpeedRankingPanel extends JPanel {
     //         }
     //     }
     // }
-
+    
     public TopSpeedRankingPanel() {
         setPreferredSize(new Dimension(300, 200));
         setBorder(BorderFactory.createTitledBorder("Top 5 Fastest Drones"));
@@ -71,14 +71,22 @@ public class TopSpeedRankingPanel extends JPanel {
                     });
 
                     removeAll();
+                    int[] rank = {1}; // Platzhalter für Platzierungen
                     droneTypeList.stream()
                         .filter(o -> o != null && o.getMax_speed() > 0)
                         .sorted((a, b) -> Double.compare(b.getMax_speed(), a.getMax_speed()))
                         .limit(5)
                         .forEachOrdered(o -> {
+                            String place = switch (rank[0]) {
+                                case 1 -> "1st Place";
+                                case 2 -> "2nd Place";
+                                case 3 -> "3rd Place";
+                                default -> rank[0] + "th Place";
+                            };
                             String name = o.getTypename();
                             String speed = o.getMax_speed() + " km/h";
-                            add(new JLabel(name + " - " + speed));
+                            add(new JLabel(place + ": " + name + " - " + speed));
+                            rank[0]++;
                         });
                     revalidate();
                     repaint();
