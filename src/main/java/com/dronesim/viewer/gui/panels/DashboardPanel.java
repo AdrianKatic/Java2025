@@ -1,7 +1,6 @@
 package com.dronesim.viewer.gui.panels;
 
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,12 +10,13 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import com.dronesim.viewer.gui.dialogs.TokenLoginDialog;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import com.dronesim.viewer.gui.components.DashboardTable;
 import com.dronesim.viewer.gui.components.DroneStatusChartPanel;
-import com.dronesim.viewer.gui.components.DroneTablePanel;
 import com.dronesim.viewer.gui.components.TopSpeedRankingPanel;
 
 public class DashboardPanel extends JPanel {
@@ -58,12 +58,8 @@ public class DashboardPanel extends JPanel {
         add(statsPanel, BorderLayout.CENTER);
 
         // Unten: Drohnenliste
-        DroneTablePanel tablePanel = new DroneTablePanel();
+        DashboardTable tablePanel = new DashboardTable();
         add(tablePanel, BorderLayout.SOUTH);
-
-        List<String[]> data = new ArrayList<>();
-        for (int i = 1; i <= 35; i++) {
-            data.add(new String[]{String.valueOf(i), "Drone-" + i, String.valueOf(20 + i), "Online"});
-        }
+        
     }
 }
