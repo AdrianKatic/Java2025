@@ -41,7 +41,7 @@ public class TopSpeedRankingPanel extends JPanel {
     //         }
     //     }
     // }
-    
+
     public TopSpeedRankingPanel() {
         setPreferredSize(new Dimension(300, 200));
         setBorder(BorderFactory.createTitledBorder("Top 5 Fastest Drones"));
@@ -101,7 +101,7 @@ public class TopSpeedRankingPanel extends JPanel {
         setPreferredSize(new Dimension(300, 200));
         setBorder(BorderFactory.createTitledBorder("Top 5 Fastest Drones"));
         setLayout(new GridLayout(5, 1));
-
+        
         overviewList.stream()
             .filter(o -> o.getDynamics() != null && o.getDynamics().getSpeed() > 0)
             .sorted((a, b) -> Double.compare(b.getDynamics().getSpeed(), a.getDynamics().getSpeed()))
@@ -109,7 +109,7 @@ public class TopSpeedRankingPanel extends JPanel {
             .forEachOrdered(o -> {
                 String name = o.getType().getTypename();
                 String speed = o.getDynamics().getSpeed() + " km/h";
-                add(new JLabel(name + " - " + speed));
+                add(new JLabel(o+ " " +name + " - " + speed));
             });
     }
 }

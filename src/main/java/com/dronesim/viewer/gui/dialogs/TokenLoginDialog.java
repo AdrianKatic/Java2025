@@ -77,17 +77,6 @@ public class TokenLoginDialog extends JDialog {
         } catch (IOException ignored) {}
     }
 
-    // private void saveProperties() {
-    //     Properties props = new Properties();
-    //     props.setProperty("api.token", getToken());
-    //     props.setProperty("api.baseUrl", getUrl());
-    //     try (FileOutputStream out = new FileOutputStream(CONFIG_FILE)) {
-    //         props.store(out, "Saved API credentials");
-    //     } catch (IOException e) {
-    //         JOptionPane.showMessageDialog(this, "Fehler beim Speichern der Konfiguration.", "Fehler", JOptionPane.ERROR_MESSAGE);
-    //     }
-    // }
-
     public boolean isConfirmed() {
         return confirmed;
     }

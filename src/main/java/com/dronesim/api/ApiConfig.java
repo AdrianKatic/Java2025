@@ -10,11 +10,6 @@ import java.util.Properties;
 public class ApiConfig {
     private final String baseUrl;
     private final String token;
-    
-    // public ApiConfig(String baseUrl, String token) {
-    //     this.baseUrl = baseUrl;
-    //     this.token = token;
-    // }
 
     public ApiConfig() {
         // load config.properties from classpath
