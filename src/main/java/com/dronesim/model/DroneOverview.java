@@ -11,6 +11,7 @@ public class DroneOverview {
       this.dynamics = dynamics;
    }
 
+
    public Drone getDrone() {
       return drone;
    }
@@ -49,5 +50,33 @@ public class DroneOverview {
 
    public String getTypeName() {
       return type.getTypename();
+   }
+   
+   public void setId(int id) {
+      this.drone.setId(id);
+   }
+
+   public void setSerialNumber(String serialNumber) {
+      this.drone.setSerialNumber(serialNumber);
+   }
+
+   public void setCarriageWeight(double weight) {
+      this.drone.setCarriage_weight((int) weight);
+   }
+
+   public void setCarriageType(String type) {
+      this.drone.setCarriage_type(type);
+   }
+
+   public void setStatus(String status) {
+      this.dynamics.setStatus(status);
+   }
+
+   public void setMaxSpeed(int speed) {
+      this.type.setMax_speed(speed);
+   }
+
+   public void setTypeName(String name) {
+      this.type.setTypename(name);
    }
 }

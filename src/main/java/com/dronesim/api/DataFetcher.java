@@ -1,24 +1,22 @@
 package com.dronesim.api;
 
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.dronesim.model.Drone;
 import com.dronesim.model.DroneDynamics;
 import com.dronesim.model.DroneOverview;
 import com.dronesim.model.DroneType;
 import com.dronesim.parser.ManualJsonParser;
-import com.dronesim.api.DataFetcher;
-
-import java.net.URI;
-
-import java.util.List;
-import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 
 public class DataFetcher {
@@ -215,8 +213,8 @@ public class DataFetcher {
                 int id = Integer.parseInt(m.group(1));
                 Drone d = droneMap.get(id);
                 if (d != null) {
-                    DroneType type = typeMap.get(d.getType());
-                    DroneOverview overview = new DroneOverview();
+                    DroneType type = typeMap.get(d.getDronetype());
+                    DroneOverview overview = new DroneOverview(d,type,dd);
                     overview.setId(d.getId());
                     overview.setSerialNumber(d.getSerialNumber());
                     overview.setCarriageWeight(d.getCarriage_weight());

@@ -1,9 +1,11 @@
 package com.dronesim.viewer.gui.components;
 
+import java.awt.BorderLayout;
 import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingWorker;
@@ -12,11 +14,11 @@ import javax.swing.table.DefaultTableModel;
 import com.dronesim.api.DataFetcher;
 import com.dronesim.model.Drone;
 
-public class DashboardTable {
+public class DashboardTable extends JPanel{
     private DefaultTableModel model;
     private JTable table;
 
-    public DroneTablePanel() {
+    public DashboardTable() {
         setLayout(new BorderLayout());
         setBorder(BorderFactory.createTitledBorder("All Drones"));
 
@@ -43,10 +45,8 @@ public class DashboardTable {
                             d.getCarriage_type()
                         });
                     }
-                } catch (Exception e) {
-                    JOptionPane.showMessageDialog(DroneTablePanel.this,
-                            "Fehler beim Laden der Drohnen:\n" + e.getMessage(),
-                            "Ladefehler", JOptionPane.ERROR_MESSAGE);
+                } catch (Exception e) { 
+                    JOptionPane.showMessageDialog(DashboardTable.this, "Fehler beim Laden der Drohnen:\n" + e.getMessage(),"Ladefehler", JOptionPane.ERROR_MESSAGE);
                 }
             }
         }.execute();
