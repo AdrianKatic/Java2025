@@ -1,12 +1,16 @@
-package com.dronesim.gui.components;
+package com.dronesim.viewer.gui.components;
 
-import com.dronesim.model.Drone;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+import com.dronesim.model.DroneType;
 
 public class TopSpeedRankingPanel extends JPanel {
     private final JLabel[] labels;
@@ -23,16 +27,16 @@ public class TopSpeedRankingPanel extends JPanel {
         }
     }
 
-    public void updateRanking(List<Drone> drones) {
-        List<Drone> top5 = drones.stream()
-                .sorted(Comparator.comparingInt(Drone::getSpeed).reversed())
+    public void updateRanking(List<DroneType> drones) {
+        List<DroneType> top5 = drones.stream()
+                .sorted(Comparator.comparingInt(DroneType::getMax_speed).reversed())
                 .limit(5)
                 .collect(Collectors.toList());
 
         for (int i = 0; i < labels.length; i++) {
             if (i < top5.size()) {
-                Drone d = top5.get(i);
-                labels[i].setText((i + 1) + ". " + d.getDronetype() + " - " + d.getSpeed() + " km/h");
+                DroneType d = top5.get(i);
+                labels[i].setText((i + 1) + ". " + d.getTypename() + " - " + d.getMax_speed() + " km/h");
             } else {
                 labels[i].setText((i + 1) + ". ---");
             }

@@ -1,14 +1,18 @@
-package com.dronesim.gui.components;
+package com.dronesim.viewer.gui.components;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+
+import javax.swing.BorderFactory;
+import javax.swing.JPanel;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.chart.plot.PiePlot;
 import org.jfree.chart.ui.RectangleInsets;
+import org.jfree.data.general.DefaultPieDataset;
 
 public class DroneStatusChartPanel extends JPanel {
     public DroneStatusChartPanel() {

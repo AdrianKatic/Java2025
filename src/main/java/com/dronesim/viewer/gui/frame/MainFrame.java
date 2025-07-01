@@ -1,8 +1,8 @@
-package com.dronesim.gui.frame;
+package com.dronesim.viewer.gui.frame;
 
 import javax.swing.JFrame;
 
-import com.dronesim.gui.panels.MainTabbedPanel;
+import com.dronesim.viewer.gui.panels.MainTabbedPanel;
 
 public class MainFrame extends JFrame{
     public MainFrame() {

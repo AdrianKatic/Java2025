@@ -42,4 +42,13 @@ public class ApiClient {
         }
         return resp.body();
     }
+
+    public boolean testConnection() {
+        try {
+            String response = getJson("/api/");
+            return response != null && !response.isEmpty();
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }

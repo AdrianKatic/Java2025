@@ -1,9 +1,8 @@
-package com.dronesim.gui.dialogs;
+package com.dronesim.viewer.gui.dialogs;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -13,16 +12,17 @@ import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+import com.dronesim.api.ApiConfig;
 
 public class TokenLoginDialog extends JDialog {
     private JTextField tokenField;
     private JTextField urlField;
     private JCheckBox saveBox;
     private boolean confirmed = false;
-    private static final String CONFIG_FILE = "config.properties";
+    private static final String CONFIG_FILE = "src/main/resources/config.properties";
 
     public TokenLoginDialog(JFrame parent) {
         super(parent, "Login - API Zugang", true);
@@ -58,7 +58,7 @@ public class TokenLoginDialog extends JDialog {
 
         okBtn.addActionListener(e -> {
             confirmed = true;
-            if (saveBox.isSelected()) saveProperties();
+            if (saveBox.isSelected()) ApiConfig.overrideAndSave(getToken(),getUrl());
             dispose();
         });
 
@@ -77,16 +77,16 @@ public class TokenLoginDialog extends JDialog {
         } catch (IOException ignored) {}
     }
 
-    private void saveProperties() {
-        Properties props = new Properties();
-        props.setProperty("api.token", getToken());
-        props.setProperty("api.baseUrl", getUrl());
-        try (FileOutputStream out = new FileOutputStream(CONFIG_FILE)) {
-            props.store(out, "Saved API credentials");
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Fehler beim Speichern der Konfiguration.", "Fehler", JOptionPane.ERROR_MESSAGE);
-        }
-    }
+    // private void saveProperties() {
+    //     Properties props = new Properties();
+    //     props.setProperty("api.token", getToken());
+    //     props.setProperty("api.baseUrl", getUrl());
+    //     try (FileOutputStream out = new FileOutputStream(CONFIG_FILE)) {
+    //         props.store(out, "Saved API credentials");
+    //     } catch (IOException e) {
+    //         JOptionPane.showMessageDialog(this, "Fehler beim Speichern der Konfiguration.", "Fehler", JOptionPane.ERROR_MESSAGE);
+    //     }
+    // }
 
     public boolean isConfirmed() {
         return confirmed;

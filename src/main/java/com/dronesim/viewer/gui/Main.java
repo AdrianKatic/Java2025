@@ -1,10 +1,10 @@
-package com.dronesim.gui;
+package com.dronesim.viewer.gui;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-import com.dronesim.gui.dialogs.TokenLoginDialog;
-import com.dronesim.gui.frame.MainFrame;
+import com.dronesim.viewer.gui.dialogs.TokenLoginDialog;
+import com.dronesim.viewer.gui.frame.MainFrame;
 
 public class Main {
     public static void main(String[] args) {

@@ -1,37 +1,35 @@
-package com.dronesim.gui.panels;
+package com.dronesim.controller;
+
+import java.util.List;
+
+import javax.swing.JOptionPane;
+import javax.swing.SwingWorker;
+import javax.swing.table.DefaultTableModel;
 
 import com.dronesim.api.DataFetcher;
 import com.dronesim.model.DroneType;
+import com.dronesim.viewer.gui.components.DroneTablePanel;
 
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import java.awt.*;
-import java.util.List;
+public class CatalogController {
+    private final DroneTablePanel tablePanel;
 
-/**
- * Ein Panel, das alle Attribute von DroneType in einer Tabelle anzeigt.
- */
-public class DroneTypePanel extends JPanel {
-    public DroneTypePanel() {
-        setLayout(new BorderLayout());
+    public CatalogController(DroneTablePanel tablePanel) {
+        this.tablePanel = tablePanel;
+    }
 
-        // Spaltennamen entsprechend DroneType
-        String[] columns = {"ID", "Manufacturer", "Type Name", "Weight", "Max Speed", "Battery Capacity", "Control Range", "Max Carriage"};
-        DefaultTableModel model = new DefaultTableModel(columns, 0);
-        JTable table = new JTable(model);
-        table.setAutoCreateRowSorter(true);
-        add(new JScrollPane(table), BorderLayout.CENTER);
-
-        // Lade DroneTypes asynchron
+    public void loadDroneTypes() {
         new SwingWorker<List<DroneType>, Void>() {
             @Override
             protected List<DroneType> doInBackground() throws Exception {
                 return new DataFetcher().fetchAllDroneTypes();
             }
+
             @Override
             protected void done() {
                 try {
-                    for (DroneType dt : get()) {
+                    List<DroneType> types = get();
+                    DefaultTableModel model = tablePanel.getModel();
+                    for (DroneType dt : types) {
                         model.addRow(new Object[]{
                             dt.getId(),
                             dt.getManufacturer(),
@@ -44,7 +42,7 @@ public class DroneTypePanel extends JPanel {
                         });
                     }
                 } catch (Exception e) {
-                    JOptionPane.showMessageDialog(DroneTypePanel.this,
+                    JOptionPane.showMessageDialog(null,
                         "Fehler beim Laden der DroneTypes:\n" + e.getMessage(),
                         "Ladefehler", JOptionPane.ERROR_MESSAGE);
                 }

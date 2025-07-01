@@ -1,8 +1,13 @@
-package com.dronesim.gui.panels;
+package com.dronesim.viewer.gui.panels;
 
 import java.awt.BorderLayout;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
 
 import com.dronesim.model.DroneDynamicsDataProvider;
 
@@ -29,7 +34,7 @@ public class MainTabbedPanel extends JPanel {
         dynamicsPanel = createDynamicsPanel(Integer.parseInt(idField.getText()));
         tabs.addTab("Dynamics", dynamicsPanel);
         add(tabs, BorderLayout.CENTER);
-        tabs.addTab("Drone Catalog", new DroneTypePanel());
+        tabs.addTab("Drone Catalog", new CatalogPanel());
 
         // 3) Action: bei Klick das Dynamics-Panel neu mit der neuen ID laden
         loadBtn.addActionListener(e -> {

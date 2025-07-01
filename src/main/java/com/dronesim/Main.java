@@ -1,35 +1,41 @@
 package com.dronesim;
 
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+
 import com.dronesim.api.ApiClient;
 import com.dronesim.api.ApiConfig;
-import com.dronesim.gui.dialogs.TokenInputDialog;
-import com.dronesim.gui.frame.MainFrame;
-
-import javax.swing.*;
+import com.dronesim.viewer.gui.dialogs.TokenLoginDialog;
+import com.dronesim.viewer.gui.frame.MainFrame;
 
 public class Main {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             try {
-                // Token vom User per Dialog holen
-                boolean demoMode = true;
+                // Token & URL vom User per Dialog holen
+                JFrame frame = new JFrame();
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setLocationRelativeTo(null);
+                TokenLoginDialog dialog = new TokenLoginDialog(frame);
+                dialog.setVisible(true);
 
-                if (!demoMode) {
-                    TokenInputDialog dialog = new TokenInputDialog();
-                    String token = dialog.getToken();
-                    if (token == null || token.isEmpty()) {
-                        JOptionPane.showMessageDialog(null, "Kein Token eingegeben.");
-                        System.exit(0);
-                    }
-                    ApiConfig.overrideToken(token);
+                String token = dialog.getToken();
+                String url = dialog.getUrl();
+
+                if (token == null || token.isEmpty() || url == null || url.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Token oder URL nicht eingegeben.");
+                    System.exit(0);
                 }
 
-                // Verbindung testen (optional, um Fehler früh zu erkennen)
-                ApiClient api = new ApiClient(new ApiConfig());
-                api.testConnection();
+                // Verbindung testen
+                ApiConfig config = new ApiConfig(url, token);
+                ApiClient api = new ApiClient(config);
+                api.testConnection(); // Optional: Testverbindung
 
                 // GUI starten
-                new MainFrame();
+                MainFrame app = new MainFrame();
+                app.setVisible(true);
 
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "Fehler beim Start: " + e.getMessage());
@@ -37,5 +43,5 @@ public class Main {
                 System.exit(1);
             }
         });
-    }    
+    }
 }
