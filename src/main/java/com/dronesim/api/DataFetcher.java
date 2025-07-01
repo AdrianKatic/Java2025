@@ -1,6 +1,8 @@
 package com.dronesim.api;
 
+import com.dronesim.model.Drone;
 import com.dronesim.model.DroneDynamics;
+import com.dronesim.model.DroneOverview;
 import com.dronesim.model.DroneType;
 import com.dronesim.parser.ManualJsonParser;
 import com.dronesim.api.DataFetcher;
@@ -11,6 +13,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -147,4 +150,87 @@ public class DataFetcher {
         return parser.parseDroneTypes(json);
     }
 
+
+    public List<DroneDynamics> fetchAllDroneDynamics(int limit, int offset) throws Exception {
+        String path = "/api/dronedynamics/?limit=" + limit + "&offset=" + offset;
+        String json = client.getJson(path);
+        List<DroneDynamics> list = parser.parseDynamics(json);
+
+        if (typeCache.isEmpty()) {
+            String typesJson = client.getJson("/api/dronetypes/?limit=100&offset=0");
+            List<DroneType> types = parser.parseDroneTypes(typesJson);
+            for (DroneType t : types) {
+                typeCache.put(t.getId(), t.getTypename());
+            }
+        }
+
+        for (DroneDynamics dd : list) {
+            String url = dd.getDrone();
+            URI uri = URI.create(url);
+            Pattern p = Pattern.compile(".*/(\\d+)/?$");
+            Matcher m = p.matcher(uri.getPath());
+            if (m.find()) {
+                int id = Integer.parseInt(m.group(1));
+                dd.setTypeName(typeCache.getOrDefault(id, "Unknown"));
+            } else {
+                dd.setTypeName("Unknown");
+            }
+        }
+
+        return list;
+    }
+
+    
+    public List<Drone> fetchAllDrones() throws Exception {
+        // Erstes Request, um Gesamtzahl abzurufen
+        String firstJson = client.getJson("/api/drones/?limit=1&offset=0");
+        JSONObject firstRoot = new JSONObject(firstJson);
+        int total = firstRoot.getInt("count");
+
+        // Dann alle auf einmal laden
+        String json = client.getJson("/api/drones/?limit=" + total + "&offset=0");
+        return parser.parseDrones(json);
+    }
+
+    public List<DroneOverview> fetchAllDroneOverviews() throws Exception {
+        List<Drone> drones = fetchAllDrones();
+        List<DroneDynamics> dynamics = fetchAllDroneDynamics(200, 0);
+        List<DroneType> types = fetchAllDroneTypes();
+
+        Map<Integer, Drone> droneMap = new HashMap<>();
+        for (Drone d : drones) {
+            droneMap.put(d.getId(), d);
+        }
+
+        Map<Integer, DroneType> typeMap = new HashMap<>();
+        for (DroneType t : types) {
+            typeMap.put(t.getId(), t);
+        }
+
+        List<DroneOverview> result = new ArrayList<>();
+        for (DroneDynamics dd : dynamics) {
+            String url = dd.getDrone();
+            Matcher m = Pattern.compile(".*/(\\d+)/?$").matcher(URI.create(url).getPath());
+            if (m.find()) {
+                int id = Integer.parseInt(m.group(1));
+                Drone d = droneMap.get(id);
+                if (d != null) {
+                    DroneType type = typeMap.get(d.getType());
+                    DroneOverview overview = new DroneOverview();
+                    overview.setId(d.getId());
+                    overview.setSerialNumber(d.getSerialNumber());
+                    overview.setCarriageWeight(d.getCarriage_weight());
+                    overview.setCarriageType(d.getCarriage_type());
+                    overview.setStatus(dd.getStatus());
+                    if (type != null) {
+                        overview.setMaxSpeed(type.getMax_speed());
+                        overview.setTypeName(type.getTypename());
+                    }
+                    result.add(overview);
+                }
+            }
+        }
+
+        return result;
+    }
 }
