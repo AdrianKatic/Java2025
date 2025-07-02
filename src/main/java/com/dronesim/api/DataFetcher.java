@@ -108,7 +108,7 @@ public class DataFetcher {
         String path = "/api/" + droneId + "/dynamics/?limit=" + limit + "&offset=" + offset;
         String json = client.getJson(path);
         List<DroneDynamics> list = parser.parseDynamics(json);
-    
+
         if (typeCache.isEmpty()) {
             String typesJson = client.getJson("/api/dronetypes/?limit=100&offset=0");
             List<DroneType> types = parser.parseDroneTypes(typesJson);
@@ -116,7 +116,7 @@ public class DataFetcher {
                 typeCache.put(t.getId(), t);
             }
         }
-        
+
         for (DroneDynamics dd : list) {
             String url = dd.getDrone();
             URI uri = URI.create(url);
@@ -127,25 +127,19 @@ public class DataFetcher {
                 DroneType t = typeCache.get(id);
                 if (t != null) {
                     dd.setTypeName(t.getTypename());
-                    double pct;
-                    double raw = dd.getBatteryStatus();    // roher API-Wert
-                    int maxCap = t.getBattery_capacity();  // z.B. 5000 mAh
-                    if (maxCap < 1000) {
-                        pct = (raw / maxCap) * 10 ;
-                        dd.setBatteryStatus(pct);
-                        System.out.println("pct:" + pct);
-                    } else {
-                        pct = (raw * 100) / maxCap;
-                        dd.setBatteryStatus(pct);
-                        System.out.println("pct:" + pct);
-                    }
+                    double raw = dd.getBatteryStatus();
+                    System.out.println("raw: " + raw);
+                    int maxCap = t.getBattery_capacity();
+                    System.out.println("maxCap: " + maxCap);
+                    double percent = raw / maxCap * 100.0;
+                    System.out.println("percent: " + percent);
+                    dd.setBatteryStatus(percent);
                 } else {
                     dd.setTypeName("Unknown");
-                } 
+                }
             } else {
                 dd.setTypeName("Unknown");
             }
-
         }
 
         return list;
