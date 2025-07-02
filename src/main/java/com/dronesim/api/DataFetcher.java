@@ -120,6 +120,7 @@ public class DataFetcher {
         for (DroneDynamics dd : list) {
             String url = dd.getDrone();
             URI uri = URI.create(url);
+            double pct;
             Pattern p = Pattern.compile(".*/(\\d+)/?$");
             Matcher m = p.matcher(uri.getPath());
             if (m.find()) {
@@ -127,12 +128,16 @@ public class DataFetcher {
                 DroneType t = typeCache.get(id);
                 if (t != null) {
                     double raw = dd.getBatteryStatus();    // roher API-Wert
-                    System.out.println("raw: " + raw);
                     int maxCap = t.getBattery_capacity();  // z.B. 5000 mAh
-                    System.out.println("maxCap: " + maxCap);
-                    double percent = raw / maxCap * 10.0;
-                    System.out.println("percent: " + percent);
-                    dd.setBatteryStatus(percent);
+                    if (maxCap < 1000) {
+                        pct = (raw / maxCap) * 10 ;
+                        dd.setBatteryStatus(pct);
+                        System.out.println("pct:" + pct);
+                    } else {
+                        pct = (raw * 100) / maxCap;
+                        dd.setBatteryStatus(pct);
+                        System.out.println("pct:" + pct);
+                    }
                 } else {
                     dd.setTypeName("Unknown");
                 } 
