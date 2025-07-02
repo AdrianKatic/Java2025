@@ -101,7 +101,7 @@ public class ManualJsonParser implements DataProvider {
 
             dd.setLatitude(Double.parseDouble(map.getOrDefault("latitude", "0")));
             dd.setLongitude(Double.parseDouble(map.getOrDefault("longitude", "0")));
-            dd.setBatteryStatus((Double.parseDouble(map.getOrDefault("battery_status", "0"))/100));
+            dd.setBatteryStatus((Double.parseDouble(map.getOrDefault("battery_status", "0"))));
             dd.setLastScene(map.getOrDefault("last_seen", ""));
             dd.setStatus(map.getOrDefault("status", "offline"));
             list.add(dd);

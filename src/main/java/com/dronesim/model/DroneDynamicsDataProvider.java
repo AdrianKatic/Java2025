@@ -14,6 +14,6 @@ public class DroneDynamicsDataProvider implements PagedDataProvider<DroneDynamic
     @Override
     public List<DroneDynamics> getPage(int pageIndex, int pageSize) throws Exception {
         int offset = pageIndex * pageSize;
-    return fetcher.fetchDroneDynamics(droneId, pageSize, offset);
+        return fetcher.fetchDroneDynamics(droneId, pageSize, offset);
     }
 }

@@ -22,7 +22,7 @@ import com.dronesim.parser.ManualJsonParser;
 public class DataFetcher {
     private final ApiClient client;
     private final ManualJsonParser parser;
-    private static final Map<Integer, String> typeCache = new HashMap<>();
+    private static final Map<Integer, DroneType> typeCache = new HashMap<>();
 
     public DataFetcher() {
         ApiConfig cfg = new ApiConfig();
@@ -113,7 +113,7 @@ public class DataFetcher {
             String typesJson = client.getJson("/api/dronetypes/?limit=100&offset=0");
             List<DroneType> types = parser.parseDroneTypes(typesJson);
             for (DroneType t : types) {
-                typeCache.put(t.getId(), t.getTypename());
+                typeCache.put(t.getId(), t);
             }
         }
         
@@ -124,7 +124,18 @@ public class DataFetcher {
             Matcher m = p.matcher(uri.getPath());
             if (m.find()) {
                 int id = Integer.parseInt(m.group(1));
-                dd.setTypeName(typeCache.getOrDefault(id, "Unknown"));
+                DroneType t = typeCache.get(id);
+                if (t != null) {
+                    double raw = dd.getBatteryStatus();    // roher API-Wert
+                    System.out.println("raw: " + raw);
+                    int maxCap = t.getBattery_capacity();  // z.B. 5000 mAh
+                    System.out.println("maxCap: " + maxCap);
+                    double percent = raw / maxCap * 10.0;
+                    System.out.println("percent: " + percent);
+                    dd.setBatteryStatus(percent);
+                } else {
+                    dd.setTypeName("Unknown");
+                } 
             } else {
                 dd.setTypeName("Unknown");
             }
@@ -158,7 +169,7 @@ public class DataFetcher {
             String typesJson = client.getJson("/api/dronetypes/?limit=100&offset=0");
             List<DroneType> types = parser.parseDroneTypes(typesJson);
             for (DroneType t : types) {
-                typeCache.put(t.getId(), t.getTypename());
+                typeCache.put(t.getId(), t);
             }
         }
 
@@ -169,10 +180,25 @@ public class DataFetcher {
             Matcher m = p.matcher(uri.getPath());
             if (m.find()) {
                 int id = Integer.parseInt(m.group(1));
-                dd.setTypeName(typeCache.getOrDefault(id, "Unknown"));
+                DroneType t = typeCache.get(id);
+                if (t != null) {
+                    // (1) Typnamen setzen
+                    dd.setTypeName(t.getTypename());
+                    // (2) echten Ladezustand in Prozent berechnen
+                    double raw = dd.getBatteryStatus();    // roher API-Wert
+                    System.out.println("raw: " + raw);
+                    int maxCap = t.getBattery_capacity();  // z.B. 5000 mAh
+                    System.out.println("maxCap: " + maxCap);
+                    double percent = raw / maxCap * 100.0;
+                    System.out.println("percent: " + percent);
+                    dd.setBatteryStatus(percent);
+                } else {
+                    dd.setTypeName("Unknown");
+                } 
             } else {
                 dd.setTypeName("Unknown");
             }
+
         }
 
         return list;

@@ -9,9 +9,13 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
+import java.text.DecimalFormat;
+
 import com.dronesim.model.DroneDynamics;
 
 public class DroneDynamicsCard extends JPanel{
+    private static final DecimalFormat BATTERY_FORMAT = new DecimalFormat("0.00");
+
     public DroneDynamicsCard(DroneDynamics dyn) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBorder(new LineBorder(Color.GRAY, 1, true));
@@ -21,7 +25,8 @@ public class DroneDynamicsCard extends JPanel{
         JLabel typeLabel = new JLabel("Type: " + dyn.getTypeName());
         typeLabel.setFont(typeLabel.getFont().deriveFont(Font.BOLD));
 
-        JLabel battery = new JLabel("Battery: " + dyn.getBatteryStatus() + "%");
+        String pct = BATTERY_FORMAT.format(dyn.getBatteryStatus());
+        JLabel battery = new JLabel("Battery: " + pct + "%");
         JLabel status = new JLabel("Status: " + dyn.getStatus());
         JLabel timestamp = new JLabel("Timestamp: " + dyn.getTimestamp());
         JLabel speed = new JLabel("Speed: " + dyn.getSpeed() + " km/h");

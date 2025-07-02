@@ -8,6 +8,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import com.dronesim.controller.DashboardController;
+
 public class DashboardTable extends JPanel{
     // private DefaultTableModel model;
     // private JTable table;
@@ -57,6 +59,7 @@ public class DashboardTable extends JPanel{
         model = new DefaultTableModel(columns, 0);
         table = new JTable(model);
         add(new JScrollPane(table), BorderLayout.CENTER);
+        new DashboardController(this).loadDroneData();
     }
 
     // public void updateTable(List<Drone> drones) {
