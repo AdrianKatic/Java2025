@@ -1,7 +1,8 @@
 package com.dronesim.viewer.gui.dialogs;
 
 import java.awt.BorderLayout;
-import java.awt.GridLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
@@ -31,21 +32,35 @@ public class TokenLoginDialog extends JDialog {
         setResizable(false);
         setLocationRelativeTo(parent);
 
-        JPanel inputPanel = new JPanel(new GridLayout(3, 2, 10, 10));
+        JPanel inputPanel = new JPanel(new GridBagLayout());
         inputPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 10, 15));
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new java.awt.Insets(5, 5, 5, 5);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
 
-        tokenField = new JTextField(30);
-        urlField = new JTextField(30);
+        tokenField = new JTextField();
+        urlField = new JTextField();
+        tokenField.setPreferredSize(new java.awt.Dimension(400, 25));
+        urlField.setPreferredSize(new java.awt.Dimension(400, 25));
         saveBox = new JCheckBox("Token speichern", true);
 
         loadDefaults();
 
-        inputPanel.add(new JLabel("API Token:"));
-        inputPanel.add(tokenField);
-        inputPanel.add(new JLabel("API URL:"));
-        inputPanel.add(urlField);
-        inputPanel.add(new JLabel());
-        inputPanel.add(saveBox);
+        gbc.gridx = 0; gbc.gridy = 0; gbc.weightx = 0;
+        inputPanel.add(new JLabel("API Token:"), gbc);
+        gbc.gridx = 1; gbc.weightx = 1.0;
+        inputPanel.add(tokenField, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 1; gbc.weightx = 0;
+        inputPanel.add(new JLabel("API URL:"), gbc);
+        gbc.gridx = 1; gbc.weightx = 1.0;
+        inputPanel.add(urlField, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 2;
+        inputPanel.add(new JLabel(), gbc);
+        gbc.gridx = 1;
+        inputPanel.add(saveBox, gbc);
 
         JButton okBtn = new JButton("Verbinden");
         JButton cancelBtn = new JButton("Abbrechen");
