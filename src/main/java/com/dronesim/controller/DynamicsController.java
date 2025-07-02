@@ -10,7 +10,7 @@ import com.dronesim.model.PagedDataProvider;
 import com.dronesim.viewer.gui.paging.DronePaginationView;
 
 public class DynamicsController {
-    private final PagedDataProvider<DroneDynamics> provider;
+    private PagedDataProvider<DroneDynamics> provider;
     private final DronePaginationView<DroneDynamics> view;
     private final int PAGE_SIZE = 10;
 
@@ -19,7 +19,15 @@ public class DynamicsController {
         this.view = view;
     }
 
+    public void setProvider(PagedDataProvider<DroneDynamics> provider) {
+        this.provider = provider;
+    }
+
     public void loadPage(int page) {
+        if (provider == null) {
+            JOptionPane.showMessageDialog(null, "No data provider set.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         SwingWorker<List<DroneDynamics>, Void> worker = new SwingWorker<>() {
             private Exception error;
 

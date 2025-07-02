@@ -19,7 +19,7 @@ import com.dronesim.viewer.gui.components.TopSpeedRankingPanel;
 import com.dronesim.viewer.gui.components.WeightCategory;
 
 public class DashboardPanel extends JPanel {
-    public DashboardPanel(int droneId) {
+    public DashboardPanel() {
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;

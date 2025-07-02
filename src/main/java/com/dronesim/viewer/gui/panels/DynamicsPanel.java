@@ -7,18 +7,19 @@ import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-// // 
+import javax.swing.JTextField;
 import javax.swing.Timer;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import com.dronesim.controller.DynamicsController;
 import com.dronesim.model.DroneDynamics;
-import com.dronesim.model.PagedDataProvider;
 import com.dronesim.viewer.gui.components.DroneDynamicsCard;
 import com.dronesim.viewer.gui.paging.DronePaginationView;
+import com.dronesim.model.DroneDynamicsDataProvider;
 
 public class DynamicsPanel extends JPanel implements DronePaginationView<DroneDynamics> {
 
@@ -26,7 +27,7 @@ public class DynamicsPanel extends JPanel implements DronePaginationView<DroneDy
     private final JLabel pageLabel;
     private final JButton prevBtn;
     private final JButton nextBtn;
-    private final DynamicsController controller;
+    private DynamicsController controller;
 
     private int currentPage = 0;
     private List<DroneDynamics> currentData;
@@ -39,8 +40,17 @@ public class DynamicsPanel extends JPanel implements DronePaginationView<DroneDy
     // NEW: Last updated timestamp label //
     private final JLabel lastUpdatedLabel = new JLabel("Last updated: --");
 
-    public DynamicsPanel(PagedDataProvider<DroneDynamics> provider) {
+    public DynamicsPanel() {
         setLayout(new BorderLayout(5, 5));
+
+        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JTextField idField = new JTextField("31", 5);
+        JButton loadBtn = new JButton("Load Drone");
+        topPanel.add(new JLabel("Drone ID:"));
+        topPanel.add(idField);
+        topPanel.add(loadBtn);
+        add(topPanel, BorderLayout.NORTH);
+
         cardContainer = new JPanel(new GridLayout(0, 2, 10, 10));
         add(new JScrollPane(cardContainer), BorderLayout.CENTER);
 
@@ -62,15 +72,23 @@ public class DynamicsPanel extends JPanel implements DronePaginationView<DroneDy
 
         add(nav, BorderLayout.SOUTH);
 
-        controller = new DynamicsController(provider, this);
+        controller = new DynamicsController(null, this); // Controller init later after input
 
         prevBtn.addActionListener(e -> {
             if (currentPage > 0) controller.loadPage(currentPage - 1);
         });
         nextBtn.addActionListener(e -> controller.loadPage(currentPage + 1));
 
-        controller.loadPage(0);
-        startAutoRefresh();
+        loadBtn.addActionListener(e -> {
+            try {
+                int droneId = Integer.parseInt(idField.getText().trim());
+                controller.setProvider(new DroneDynamicsDataProvider(droneId));
+                controller.loadPage(0);
+                startAutoRefresh();
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Ungültige Drone-ID", "Fehler", JOptionPane.ERROR_MESSAGE);
+            }
+        });
     }
 
     @Override
@@ -106,7 +124,9 @@ public class DynamicsPanel extends JPanel implements DronePaginationView<DroneDy
         refreshTimer = new Timer(refreshIntervalMs, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                controller.loadPage(currentPage);
+                if (controller != null) {
+                    controller.loadPage(currentPage);
+                }
             }
         });
         refreshTimer.start();
