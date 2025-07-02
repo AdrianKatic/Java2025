@@ -127,19 +127,25 @@ public class DataFetcher {
                 DroneType t = typeCache.get(id);
                 if (t != null) {
                     dd.setTypeName(t.getTypename());
-                    double raw = dd.getBatteryStatus();
-                    System.out.println("raw: " + raw);
-                    int maxCap = t.getBattery_capacity();
-                    System.out.println("maxCap: " + maxCap);
-                    double percent = raw / maxCap * 100.0;
-                    System.out.println("percent: " + percent);
-                    dd.setBatteryStatus(percent);
+                    double pct;
+                    double raw = dd.getBatteryStatus();    // roher API-Wert
+                    int maxCap = t.getBattery_capacity();  // z.B. 5000 mAh
+                    if (maxCap < 1000) {
+                        pct = (raw / maxCap) * 10 ;
+                        dd.setBatteryStatus(pct);
+                        System.out.println("pct:" + pct);
+                    } else {
+                        pct = (raw * 100) / maxCap;
+                        dd.setBatteryStatus(pct);
+                        System.out.println("pct:" + pct);
+                    }
                 } else {
                     dd.setTypeName("Unknown");
-                }
+                } 
             } else {
                 dd.setTypeName("Unknown");
             }
+
         }
 
         return list;
