@@ -9,6 +9,10 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+// // 
+import javax.swing.Timer;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import com.dronesim.controller.DynamicsController;
 import com.dronesim.model.DroneDynamics;
@@ -28,19 +32,34 @@ public class DynamicsPanel extends JPanel implements DronePaginationView<DroneDy
     private List<DroneDynamics> currentData;
     private int pageSize = 10;
 
+    // Timer for automatic page refresh//
+    private Timer refreshTimer;
+    private final int refreshIntervalMs = 5000; // 5 seconds
+
+    // NEW: Last updated timestamp label //
+    private final JLabel lastUpdatedLabel = new JLabel("Last updated: --");
+
     public DynamicsPanel(PagedDataProvider<DroneDynamics> provider) {
         setLayout(new BorderLayout(5, 5));
         cardContainer = new JPanel(new GridLayout(0, 2, 10, 10));
         add(new JScrollPane(cardContainer), BorderLayout.CENTER);
 
-        JPanel nav = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        // Create nav panel using BorderLayout to support right-aligned timestamp //
+        JPanel nav = new JPanel(new BorderLayout());
+
+        // Navigation buttons panel (centered) //
+        JPanel navControls = new JPanel(new FlowLayout(FlowLayout.CENTER));
         prevBtn = new JButton("<");
         nextBtn = new JButton(">");
         pageLabel = new JLabel();
+        navControls.add(prevBtn);
+        navControls.add(pageLabel);
+        navControls.add(nextBtn);
 
-        nav.add(prevBtn);
-        nav.add(pageLabel);
-        nav.add(nextBtn);
+        // Add components to nav panel //
+        nav.add(navControls, BorderLayout.CENTER);
+        nav.add(lastUpdatedLabel, BorderLayout.EAST); // Right side
+
         add(nav, BorderLayout.SOUTH);
 
         controller = new DynamicsController(provider, this);
@@ -51,6 +70,7 @@ public class DynamicsPanel extends JPanel implements DronePaginationView<DroneDy
         nextBtn.addActionListener(e -> controller.loadPage(currentPage + 1));
 
         controller.loadPage(0);
+        startAutoRefresh();
     }
 
     @Override
@@ -67,7 +87,34 @@ public class DynamicsPanel extends JPanel implements DronePaginationView<DroneDy
         pageLabel.setText("Page " + (currentPage + 1));
         prevBtn.setEnabled(currentPage > 0);
         nextBtn.setEnabled(entries.size() == pageSize);
+
+        // NEW: Update last updated label and log //
+        java.time.LocalTime now = java.time.LocalTime.now().withNano(0);
+        lastUpdatedLabel.setText("Last updated: " + now);
+        System.out.println("[DynamicsPanel] Refreshed at " + now);
+
         revalidate();
         repaint();
+    }
+
+    // //
+    public void startAutoRefresh() {
+        if (refreshTimer != null) {
+            refreshTimer.stop();
+        }
+
+        refreshTimer = new Timer(refreshIntervalMs, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.loadPage(currentPage);
+            }
+        });
+        refreshTimer.start();
+    }
+
+    public void stopAutoRefresh() {
+        if (refreshTimer != null && refreshTimer.isRunning()) {
+            refreshTimer.stop();
+        }
     }
 }

@@ -35,7 +35,7 @@ public class MainTabbedPanel extends JPanel {
         tabs.addTab("Dynamics", dynamicsPanel);
         add(tabs, BorderLayout.CENTER);
         tabs.addTab("Drone Catalog", new CatalogPanel());
-
+        
         // 3) Action: bei Klick das Dynamics-Panel neu mit der neuen ID laden
         loadBtn.addActionListener(e -> {
             try {
@@ -52,6 +52,7 @@ public class MainTabbedPanel extends JPanel {
             }
         });
     }
+
 
     /** Fabrikmethode für ein frisches DynamicsPanel mit neuem Provider */
     private DynamicsPanel createDynamicsPanel(int droneId) {
