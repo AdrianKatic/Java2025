@@ -120,13 +120,14 @@ public class DataFetcher {
         for (DroneDynamics dd : list) {
             String url = dd.getDrone();
             URI uri = URI.create(url);
-            double pct;
             Pattern p = Pattern.compile(".*/(\\d+)/?$");
             Matcher m = p.matcher(uri.getPath());
             if (m.find()) {
                 int id = Integer.parseInt(m.group(1));
                 DroneType t = typeCache.get(id);
                 if (t != null) {
+                    dd.setTypeName(t.getTypename());
+                    double pct;
                     double raw = dd.getBatteryStatus();    // roher API-Wert
                     int maxCap = t.getBattery_capacity();  // z.B. 5000 mAh
                     if (maxCap < 1000) {
