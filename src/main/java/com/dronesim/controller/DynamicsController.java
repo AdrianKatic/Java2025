@@ -19,6 +19,11 @@ public class DynamicsController {
         this.view = view;
     }
 
+    /**
+     * Loads a page of drone dynamics data using a SwingWorker.
+     * Updates the view with the result or shows an error dialog if loading fails.
+     */
+    
     public void setProvider(PagedDataProvider<DroneDynamics> provider) {
         this.provider = provider;
     }

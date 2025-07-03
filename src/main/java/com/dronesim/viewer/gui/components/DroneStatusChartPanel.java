@@ -14,6 +14,10 @@ import org.jfree.chart.plot.PiePlot;
 import org.jfree.chart.ui.RectangleInsets;
 import org.jfree.data.general.DefaultPieDataset;
 
+/**
+ * A panel that displays a pie chart of drone status counts (Online, Offline, Issue).
+ */
+
 public class DroneStatusChartPanel extends JPanel {
     private ChartPanel chartPanel;
 

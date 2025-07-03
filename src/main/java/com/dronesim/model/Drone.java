@@ -1,47 +1,33 @@
 package com.dronesim.model;
 
-/**
- * Represents an individual drone instance in the drone simulation system. Holds
- * data such as ID, serial number, model, cargo weight, status, and last seen
- * time.
- */
 public class Drone {
 
-    // Unique id for the drone
     private int id;
 
-    // The type of drone
-    private String dronetype;
+    private String droneType;
 
-    // Creation date of the drone
     private String created;
 
-    // Manufacturer-assigned serial number
     private String serialNumber;
 
-    // Weight of the cargo being carried, in kg
-    private int carriage_weight;
+    private int carriageWeight;
 
-    // Type of the carriage
-    private String carriage_type;
+    private String carriageType;
 
-    // Full constructor – used when creating a drone object with all data
-    public Drone(int id, String dronetype, String created, String serialNumber, int carriage_weight, String carriage_type) {
+    public Drone(int id, String droneType, String created, String serialNumber, int carriageWeight, String carriageType) {
         this.id = id;
-        this.dronetype = dronetype;
+        this.droneType = droneType;
         this.created = created;
         this.serialNumber = serialNumber;
-        this.carriage_weight = carriage_weight;
-        this.carriage_type = carriage_type;
+        this.carriageWeight = carriageWeight;
+        this.carriageType = carriageType;
 
     }
 
     // Default constructor – required for JSON libraries
     public Drone() {
-
     }
 
-    // Getter and setter methods for each attribute
     public int getId() {
         return id;
     }
@@ -50,12 +36,12 @@ public class Drone {
         this.id = id;
     }
 
-    public String getDronetype() {
-        return dronetype;
+    public String getDroneType() {
+        return droneType;
     }
 
-    public void setDronetype(String dronetype) {
-        this.dronetype = dronetype;
+    public void setDroneType(String droneType) {
+        this.droneType = droneType;
     }
 
     public String getCreated() {
@@ -74,31 +60,31 @@ public class Drone {
         this.serialNumber = serialNumber;
     }
 
-    public double getCarriage_weight() {
-        return carriage_weight;
+    public double getCarriageWeight() {
+        return carriageWeight;
     }
 
-    public void setCarriage_weight(int carriage_weight) {
-        this.carriage_weight = carriage_weight;
+    public void setCarriageWeight(int carriageWeight) {
+        this.carriageWeight = carriageWeight;
     }
 
-    public String getCarriage_type() {
-        return carriage_type;
+    public String getCarriageType() {
+        return carriageType;
     }
 
-    public void setCarriage_type(String carriage_type) {
-        this.carriage_type = carriage_type;
+    public void setCarriageType(String carriageType) {
+        this.carriageType = carriageType;
     }
 
     @Override
     public String toString() {
         return "Drone{"
                 + "id=" + id
-                + ", dronetype='" + dronetype + '\''
+                + ", droneType='" + droneType + '\''
                 + ", created='" + created + '\''
                 + ", serialNumber='" + serialNumber + '\''
-                + ", carriage_weight=" + carriage_weight
-                + ", carriage_type='" + carriage_type + '\''
+                + ", carriageWeight=" + carriageWeight
+                + ", carriageType='" + carriageType + '\''
                 + '}';
 
     }

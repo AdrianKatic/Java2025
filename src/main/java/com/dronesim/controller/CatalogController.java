@@ -17,6 +17,11 @@ public class CatalogController {
         this.tablePanel = tablePanel;
     }
 
+    /** 
+     * Loads drone types in the background with Swingworker and fills the table with the results.
+     * Shows an error message if something goes wrong.
+    */
+
     public void loadDroneTypes() {
         new SwingWorker<List<DroneType>, Void>() {
             @Override
@@ -35,10 +40,10 @@ public class CatalogController {
                             dt.getManufacturer(),
                             dt.getTypename(),
                             dt.getWeight(),
-                            dt.getMax_speed(),
-                            dt.getBattery_capacity(),
-                            dt.getControl_range(),
-                            dt.getMax_carriage()
+                            dt.getMaxSpeed(),
+                            dt.getBatteryCapacity(),
+                            dt.getControlRange(),
+                            dt.getMaxCarriage()
                         });
                     }
                 } catch (Exception e) {

@@ -1,42 +1,28 @@
 package com.dronesim.model;
 
-/**
- * Represents the real-time dynamics data of an individual drone in the
- * simulation system. Holds data such as speed, orientation (roll, pitch, yaw),
- * location (latitude, longitude), velocity, battery level, and status.
- */
 public class DroneDynamics {
 
-    // Reference to the associated drone 
     private String drone;
 
-    // Timestamp of the recorded data
     private String timestamp;
 
-    // Current speed of the drone in m/s
     private double speed;
 
-    // Orientation
     private double alignRoll;
     private double alignPitch;
     private double alignYaw;
 
-    // GPS coordinates
     private double latitude;
     private double longitude;
 
-    // Battery level in percentage (0.0 - 100.0)
     private double batteryStatus;
 
-    // Name or identifier of the last scene or task
     private String lastScene;
 
-    // Online/offline status
     private String status;
 
     private String typeName;
 
-    // Full constructor – used when creating a dynamics record with all data
     public DroneDynamics(String drone, String timestamp, double speed, double alignRoll,
             double alignPitch, double alignYaw, double latitude, double longitude,
             double batteryStatus, String lastScene, String status) {
@@ -57,12 +43,11 @@ public class DroneDynamics {
     public DroneDynamics() {
     }
 
-    // Getter and setter methods for each attribute
+
     public String getDrone() {
         return drone;
     }
-
-    public void setDrone(String drone) {
+       public void setDrone(String drone) {
         this.drone = drone;
     }
 
@@ -156,7 +141,6 @@ public class DroneDynamics {
 
 
 
-    // Overridden toString method to display dynamics data in a readable format
     @Override
     public String toString() {
         return "DroneDynamics{"

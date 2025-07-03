@@ -33,11 +33,11 @@ public class DroneOverview {
    }
 
    public double getCarriageWeight() {
-      return drone.getCarriage_weight();
+      return drone.getCarriageWeight();
    }
 
    public String getCarriageType() {
-      return drone.getCarriage_type();
+      return drone.getCarriageType();
    }
 
    public String getStatus() {
@@ -45,7 +45,7 @@ public class DroneOverview {
    }
 
    public int getMaxSpeed() {
-      return type.getMax_speed();
+      return type.getMaxSpeed();
    }
 
    public String getTypeName() {
@@ -61,11 +61,11 @@ public class DroneOverview {
    }
 
    public void setCarriageWeight(double weight) {
-      this.drone.setCarriage_weight((int) weight);
+      this.drone.setCarriageWeight((int) weight);
    }
 
    public void setCarriageType(String type) {
-      this.drone.setCarriage_type(type);
+      this.drone.setCarriageType(type);
    }
 
    public void setStatus(String status) {
@@ -73,7 +73,7 @@ public class DroneOverview {
    }
 
    public void setMaxSpeed(int speed) {
-      this.type.setMax_speed(speed);
+      this.type.setMaxSpeed(speed);
    }
 
    public void setTypeName(String name) {

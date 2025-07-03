@@ -18,6 +18,9 @@ import com.dronesim.model.DroneOverview;
 import com.dronesim.model.DroneType;
 import com.dronesim.parser.ManualJsonParser;
 
+/**
+ * Fetches drone data from API endpoints and parses it into model objects.
+ */
 
 public class DataFetcher {
     private final ApiClient client;
@@ -30,13 +33,10 @@ public class DataFetcher {
         this.parser = new ManualJsonParser();
     }
 
-
-    /*
-     * @param limit, number of entries to fetch
-     * @param offset, offset for pagination
-     * @param List of parsed DroneDynamics objects
-    */
-
+    /**
+     * Fetches and prints drone dynamics data page by page without user interaction.
+     * Mainly for testing or debugging purposes.
+     */
     
     public void fetchDroneDynamicsWithPagination() throws Exception, InterruptedException {
         String path = "/api/dronedynamics/?limit=20&offset=0";  // Start-URL
@@ -77,7 +77,6 @@ public class DataFetcher {
 
                 String json = client.getJson(path);
                 
-                // List<DroneDynamics> page = parser.parseDynamics(json);
                 parser.parseDynamics(json).forEach(System.out::println);
                 
                 // page.forEach(System.out::println);
@@ -104,61 +103,62 @@ public class DataFetcher {
     }
 
 
+    // Cache drone types to avoid repeated API calls
     public List<DroneDynamics> fetchDroneDynamics(int droneId, int limit, int offset) throws Exception {
         String path = "/api/" + droneId + "/dynamics/?limit=" + limit + "&offset=" + offset;
         String json = client.getJson(path);
         List<DroneDynamics> list = parser.parseDynamics(json);
 
-        // (2) Typ-Cache füllen, falls leer
         if (typeCache.isEmpty()) {
             String typesJson = client.getJson("/api/dronetypes/?limit=100&offset=0");
             List<DroneType> types = parser.parseDroneTypes(typesJson);
-            for (DroneType t : types) typeCache.put(t.getId(), t);
+            for (DroneType t : types) {
+                typeCache.put(t.getId(), t);
+            }
         }
 
         for (DroneDynamics dd : list) {
-            // (3) Drone-ID aus der Dynamics-URL extrahieren
-            Matcher m = Pattern.compile(".*/(\\d+)/?$").matcher(dd.getDrone());
-            if (!m.find()) {
+            String url = dd.getDrone();
+            URI uri = URI.create(url);
+            Pattern p = Pattern.compile(".*/(\\d+)/?$");
+            Matcher m = p.matcher(uri.getPath());
+            if (m.find()) {
+                int id = Integer.parseInt(m.group(1));
+                DroneType t = typeCache.get(id);
+                if (t != null) {
+                    dd.setTypeName(t.getTypename());
+                    double pct;
+                    double raw = dd.getBatteryStatus();   
+                    int maxCap = t.getBatteryCapacity(); 
+                    if (maxCap < 1000) {
+                        pct = (raw / maxCap) * 10 ;
+                        dd.setBatteryStatus(pct);
+                        System.out.println("pct:" + pct);
+                    } else {
+                        pct = (raw * 100) / maxCap;
+                        dd.setBatteryStatus(pct);
+                        System.out.println("pct:" + pct);
+                    }
+                } else {
+                    dd.setTypeName("Unknown");
+                } 
+            } else {
                 dd.setTypeName("Unknown");
-                continue;
-            }
-            int dynDroneId = Integer.parseInt(m.group(1));
-
-            // (4) Einzeldrone abfragen, um die dronetype-URL zu bekommen
-            String singleDroneJson = client.getJson("/api/drones/" + dynDroneId + "/");
-            String typeUrl = new JSONObject(singleDroneJson).getString("dronetype");
-            int typeId = Integer.parseInt(typeUrl.replaceAll(".*/(\\d+)/?$", "$1"));
-
-            // (5) Richtiges DroneType-Objekt ziehen
-            DroneType t = typeCache.get(typeId);
-            if (t == null) {
-                dd.setTypeName("Unknown");
-                continue;
             }
 
-            // (6) Typnamen und Batterie-Prozent setzen
-            dd.setTypeName(t.getTypename());
-            double raw = dd.getBatteryStatus();
-            double percent = raw * 100.0 / t.getBattery_capacity();
-            // optional auf 0–100 begrenzen:
-            dd.setBatteryStatus(Math.max(0, Math.min(100, percent)));
         }
 
         return list;
     }
-
 
     public List<DroneDynamics> fetchDroneDynamicsForDrone(int droneId, int limit, int offset) throws Exception {
         return fetchDroneDynamics(droneId, limit, offset);
     }
 
     public List<DroneType> fetchAllDroneTypes() throws Exception {
-        // Erstes Request, um Gesamtzahl abzurufen
         String firstJson = client.getJson("/api/dronetypes/?limit=1&offset=0");
         JSONObject firstRoot = new JSONObject(firstJson);
         int total = firstRoot.getInt("count");
-        // Dann alle auf einmal laden
         String json = client.getJson("/api/dronetypes/?limit=" + total + "&offset=0");
         return parser.parseDroneTypes(json);
     }
@@ -191,7 +191,7 @@ public class DataFetcher {
                     // (2) echten Ladezustand in Prozent berechnen
                     double raw = dd.getBatteryStatus();    // roher API-Wert
                     System.out.println("raw: " + raw);
-                    int maxCap = t.getBattery_capacity();  // z.B. 5000 mAh
+                    int maxCap = t.getBatteryCapacity();  // z.B. 5000 mAh
                     System.out.println("maxCap: " + maxCap);
                     double percent = raw / maxCap * 100.0;
                     System.out.println("percent: " + percent);
@@ -243,16 +243,15 @@ public class DataFetcher {
                 int id = Integer.parseInt(m.group(1));
                 Drone d = droneMap.get(id);
                 if (d != null) {
-                    int typeId = Integer.parseInt(d.getDronetype().replaceAll(".*/(\\d+)/?$", "$1"));
-                    DroneType type = typeMap.get(typeId);
+                    DroneType type = typeMap.get(d.getDroneType());
                     DroneOverview overview = new DroneOverview(d,type,dd);
                     overview.setId(d.getId());
                     overview.setSerialNumber(d.getSerialNumber());
-                    overview.setCarriageWeight(d.getCarriage_weight());
-                    overview.setCarriageType(d.getCarriage_type());
+                    overview.setCarriageWeight(d.getCarriageWeight());
+                    overview.setCarriageType(d.getCarriageType());
                     overview.setStatus(dd.getStatus());
                     if (type != null) {
-                        overview.setMaxSpeed(type.getMax_speed());
+                        overview.setMaxSpeed(type.getMaxSpeed());
                         overview.setTypeName(type.getTypename());
                     }
                     result.add(overview);

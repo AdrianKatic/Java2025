@@ -11,6 +11,9 @@ import javax.swing.JPanel;
 import com.dronesim.model.DroneOverview;
 import com.dronesim.model.DroneType;
 
+/**
+ * A panel that displays the top 5 fastest drones based on their maximum speed.
+ */
 public class TopSpeedRankingPanel extends JPanel {
     public TopSpeedRankingPanel() {
         setPreferredSize(new Dimension(300, 200));
@@ -23,12 +26,11 @@ public class TopSpeedRankingPanel extends JPanel {
                 try {
                     return new com.dronesim.api.DataFetcher().fetchAllDroneTypes();
                 } catch (Exception e) {
-                    e.printStackTrace(); // ← Das druckt den Fehler in die Konsole
-                    throw e; // ← So landet der Fehler trotzdem im catch-Block von done()
+                    e.printStackTrace(); 
+                    throw e; 
                 }
             }
 
-            // Ausgabe aller Drohnen im Terminal
             @Override
             protected void done() {
                 try {
@@ -37,14 +39,14 @@ public class TopSpeedRankingPanel extends JPanel {
                     System.out.println("Übersicht empfangen: " + droneTypeList.size());
                     droneTypeList.forEach(o -> {
                         System.out.println("Name: " + (o != null ? o.getTypename() : "null") + 
-                                           ", Max Speed: " + (o != null ? o.getMax_speed() : "null"));
+                                           ", Max Speed: " + (o != null ? o.getMaxSpeed() : "null"));
                     });
 
                     removeAll();
-                    int[] rank = {1}; // Platzhalter für Platzierungen
+                    int[] rank = {1}; 
                     droneTypeList.stream()
-                        .filter(o -> o != null && o.getMax_speed() > 0)
-                        .sorted((a, b) -> Double.compare(b.getMax_speed(), a.getMax_speed()))
+                        .filter(o -> o != null && o.getMaxSpeed() > 0)
+                        .sorted((a, b) -> Double.compare(b.getMaxSpeed(), a.getMaxSpeed()))
                         .limit(5)
                         .forEachOrdered(o -> {
                             String place = switch (rank[0]) {
@@ -54,7 +56,7 @@ public class TopSpeedRankingPanel extends JPanel {
                                 default -> rank[0] + "th Place";
                             };
                             String name = o.getTypename();
-                            String speed = o.getMax_speed() + " km/h";
+                            String speed = o.getMaxSpeed() + " km/h";
                             add(new JLabel(place + ": " + name + " - " + speed));
                             rank[0]++;
                         });

@@ -17,6 +17,10 @@ public class DashboardController {
         this.view = view;
     }
 
+    /**
+     * Loads drone data in the background with Swingworker and updates the table.
+     * Shows an error dialog if loading fails.
+     */
     public void loadDroneData() {
         new SwingWorker<List<Drone>, Void>() {
             @Override
@@ -29,13 +33,13 @@ public class DashboardController {
                 try {
                     List<Drone> drones = get();
                     DefaultTableModel model = view.getModel();
-                    model.setRowCount(0); // alte Einträge löschen
+                    model.setRowCount(0); // deletes alle entries
                     for (Drone d : drones) {
                         model.addRow(new Object[]{
                                 d.getId(),
                                 d.getSerialNumber(),
-                                d.getCarriage_weight(),
-                                d.getCarriage_type()
+                                d.getCarriageWeight(),
+                                d.getCarriageType()
                         });
                     }
                 } catch (Exception e) {

@@ -3,16 +3,18 @@ package com.dronesim.viewer.gui.components;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.text.DecimalFormat;
 
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
-import java.text.DecimalFormat;
-
 import com.dronesim.model.DroneDynamics;
 
+/**
+ * A UI panel that displays detailed drone dynamics information in a card format.
+ */
 public class DroneDynamicsCard extends JPanel{
     private static final DecimalFormat BATTERY_FORMAT = new DecimalFormat("0.00");
 
