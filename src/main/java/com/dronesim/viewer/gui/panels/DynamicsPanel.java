@@ -46,7 +46,7 @@ public class DynamicsPanel extends JPanel implements DronePaginationView<DroneDy
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JTextField idField = new JTextField("31", 5);
         JButton loadBtn = new JButton("Load Drone");
-        topPanel.add(new JLabel("Drone ID:"));
+        topPanel.add(new JLabel("Dynamics Drone ID:"));
         topPanel.add(idField);
         topPanel.add(loadBtn);
         add(topPanel, BorderLayout.NORTH);

@@ -105,48 +105,40 @@ public class DataFetcher {
 
 
     public List<DroneDynamics> fetchDroneDynamics(int droneId, int limit, int offset) throws Exception {
-        String path = "/api/" + droneId + "/dynamics/?limit=" + limit + "&offset=" + offset;
-        String json = client.getJson(path);
-        List<DroneDynamics> list = parser.parseDynamics(json);
+    // Dynamics holen
+    String path = "/api/" + droneId + "/dynamics/?limit=" + limit + "&offset=" + offset;
+    String json = client.getJson(path);
+    List<DroneDynamics> list = parser.parseDynamics(json);
 
-        // (2) Typ-Cache füllen, falls leer
-        if (typeCache.isEmpty()) {
-            String typesJson = client.getJson("/api/dronetypes/?limit=100&offset=0");
-            List<DroneType> types = parser.parseDroneTypes(typesJson);
-            for (DroneType t : types) typeCache.put(t.getId(), t);
+    // Typ-Cache füllen, falls leer
+    if (typeCache.isEmpty()) {
+        String typesJson = client.getJson("/api/dronetypes/?limit=100&offset=0");
+        List<DroneType> types = parser.parseDroneTypes(typesJson);
+        for (DroneType t : types) {
+            typeCache.put(t.getId(), t);
         }
+    }
 
-        for (DroneDynamics dd : list) {
-            // (3) Drone-ID aus der Dynamics-URL extrahieren
-            Matcher m = Pattern.compile(".*/(\\d+)/?$").matcher(dd.getDrone());
-            if (!m.find()) {
-                dd.setTypeName("Unknown");
-                continue;
-            }
-            int dynDroneId = Integer.parseInt(m.group(1));
+    // Einzelne Drohne nur einmal abfragen und typeId extrahieren
+    String singleDroneJson = client.getJson("/api/drones/" + droneId + "/");
+    String typeUrl = new JSONObject(singleDroneJson).getString("dronetype");
+    int typeId = Integer.parseInt(typeUrl.replaceAll(".*/(\\d+)/?$", "$1"));
+    DroneType t = typeCache.get(typeId);
 
-            // (4) Einzeldrone abfragen, um die dronetype-URL zu bekommen
-            String singleDroneJson = client.getJson("/api/drones/" + dynDroneId + "/");
-            String typeUrl = new JSONObject(singleDroneJson).getString("dronetype");
-            int typeId = Integer.parseInt(typeUrl.replaceAll(".*/(\\d+)/?$", "$1"));
-
-            // (5) Richtiges DroneType-Objekt ziehen
-            DroneType t = typeCache.get(typeId);
-            if (t == null) {
-                dd.setTypeName("Unknown");
-                continue;
-            }
-
-            // (6) Typnamen und Batterie-Prozent setzen
+    // Loop: Typnamen + Batterie-Prozent (0–100) berechnen
+    for (DroneDynamics dd : list) {
+        if (t != null) {
             dd.setTypeName(t.getTypename());
             double raw = dd.getBatteryStatus();
             double percent = raw * 100.0 / t.getBattery_capacity();
-            // optional auf 0–100 begrenzen:
             dd.setBatteryStatus(Math.max(0, Math.min(100, percent)));
+        } else {
+            dd.setTypeName("Unknown");
         }
-
-        return list;
     }
+
+    return list;
+}
 
 
     public List<DroneDynamics> fetchDroneDynamicsForDrone(int droneId, int limit, int offset) throws Exception {

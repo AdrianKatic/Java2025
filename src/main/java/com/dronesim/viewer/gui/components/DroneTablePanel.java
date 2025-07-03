@@ -13,7 +13,7 @@ public class DroneTablePanel extends JPanel {
 
     public DroneTablePanel() {
         String[] columns = {
-            "ID", "Manufacturer", "Type Name", "Weight",
+            "DroneType ID", "Manufacturer", "Type Name", "Weight",
             "Max Speed", "Battery Capacity", "Control Range", "Max Carriage"
         };
         model = new DefaultTableModel(columns, 0);
