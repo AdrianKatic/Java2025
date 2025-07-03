@@ -151,4 +151,26 @@ import com.dronesim.model.DroneType;
         return toMap(firstRaw);
     }
 
+
+    public Integer findDroneIdByType(String fullJson, int typeId) throws Exception {
+        String array = extractResultsArray(fullJson);
+        if (array.isEmpty()) {
+            return null;
+        }
+        String[] items = array.split("\\},\\s*\\{");
+        for (String item : items) {
+            String clean = item.replaceAll("^[\\{\\s]+|[\\}\\s]+$", "");
+            Map<String, String> map = toMap(clean);
+            int droneId = Integer.parseInt(map.get("id"));
+            String typeUrl = map.get("dronetype"); 
+            int parsedTypeId = Integer.parseInt(
+                typeUrl.replaceAll(".*/(\\d+)/?$", "$1")
+            );
+            if (parsedTypeId == typeId) {
+                return droneId;
+            }
+        }
+        return null;
+    }
+
 }

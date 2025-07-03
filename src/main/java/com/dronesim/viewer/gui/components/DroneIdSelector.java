@@ -12,10 +12,10 @@ import javax.swing.JTextField;
 public class DroneIdSelector extends JPanel{
    public DroneIdSelector(IntConsumer onLoad) {
         setLayout(new FlowLayout(FlowLayout.LEFT));
-        JTextField idField = new JTextField("31", 5);
+        JTextField idField = new JTextField("21", 5);
         JButton loadBtn = new JButton("Load Drone");
 
-        add(new JLabel("Dynamics Drone ID:"));
+        add(new JLabel("Drone ID:"));
         add(idField);
         add(loadBtn);
 
