@@ -7,7 +7,7 @@ import javax.swing.JTabbedPane;
 
 /**
  * The main panel containing all application tabs: Dashboard, Dynamics, and Drone Catalog.
- * Includes a control bar to reload panels based on a given drone ID.
+ * 
  */
 
 public class MainTabbedPanel extends JPanel {
@@ -17,7 +17,6 @@ public class MainTabbedPanel extends JPanel {
     public MainTabbedPanel() {
         setLayout(new BorderLayout());
 
-        // Top control panel: ID input field and load button
         tabs = new JTabbedPane();
         tabs.addTab("Dashboard", new DashboardPanel());
         dynamicsPanel = new DynamicsPanel();

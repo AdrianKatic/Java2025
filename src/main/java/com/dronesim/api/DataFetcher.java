@@ -26,7 +26,6 @@ public class DataFetcher {
     private final ApiClient client;
     private final ManualJsonParser parser;
     private static final Map<Integer, DroneType> typeCache = new HashMap<>();
-    private static final Map<Integer, Drone> droneCache = new HashMap<>();
 
     public DataFetcher() {
         ApiConfig cfg = new ApiConfig();
@@ -250,5 +249,50 @@ public class DataFetcher {
         }
 
         return result;
+    }
+
+    public int[] fetchAllDroneStatusCounts() throws Exception {
+        List<Drone> drones = fetchAllDrones();
+
+        int online  = 0;
+        int offline = 0;
+        int issue   = 0;
+
+        for (Drone d : drones) {
+            List<DroneDynamics> dyns = fetchDroneDynamicsForDrone(d.getId(), 1, 0);
+            if (dyns.isEmpty()) continue;
+            String status = dyns.get(0).getStatus();
+            switch (status) {
+                case "ON" -> online++;
+                case "OF" -> offline++;
+                case "IS" -> issue++;
+            }
+        }
+
+        return new int[]{ online, offline, issue };
+    }
+
+    // Debug Check
+    public void printDroneStatusSummary() throws Exception {
+        List<Drone> drones = fetchAllDrones();
+        int online = 0, offline = 0, issue = 0;
+
+        System.out.println("Serialnumbers ---- ");
+        for (Drone d : drones) {
+            List<DroneDynamics> dyns = fetchDroneDynamicsForDrone(d.getId(), 1, 0);
+            String status = dyns.isEmpty() ? "(no data)" : dyns.get(0).getStatus();
+            System.out.printf("ID=%d  SN=%s  Status=%s%n", d.getId(), d.getSerialNumber(), status);
+
+            switch (status) {
+                case "ON" -> online++;
+                case "OF" -> offline++;
+                case "IS" -> issue++;
+            }
+        }
+
+        System.out.println("\n=== Gesamt ===");
+        System.out.printf("Online:  %d%n", online);
+        System.out.printf("Offline: %d%n", offline);
+        System.out.printf("Issue:   %d%n", issue);
     }
 }

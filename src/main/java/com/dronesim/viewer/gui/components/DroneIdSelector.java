@@ -34,11 +34,9 @@ public class DroneIdSelector extends JPanel {
         loadBtn.addActionListener(e -> {
             try {
                 int typeId = Integer.parseInt(typeField.getText().trim());
-                // 1) fetch all drones once
                 List<Drone> all = fetcher.fetchAllDrones();
                 serialToId.clear();
                 combo.removeAllItems();
-                // 2) filter by matching type
                 for (Drone d : all) {
                     String typeUrl = d.getDroneType();
                     int parsed = Integer.parseInt(typeUrl.replaceAll(".*/(\\d+)/?$","$1"));
@@ -49,8 +47,8 @@ public class DroneIdSelector extends JPanel {
                 }
                 if (combo.getItemCount()==0) {
                     JOptionPane.showMessageDialog(this,
-                        "Keine Seriennummern gefunden für typeId "+typeId,
-                        "Keine Drohnen", JOptionPane.WARNING_MESSAGE);
+                        "No serial numbers found for typeId "+typeId,
+                        "No Drones", JOptionPane.WARNING_MESSAGE);
                     combo.setVisible(false);
                 } else {
                     combo.setVisible(true);
@@ -60,10 +58,10 @@ public class DroneIdSelector extends JPanel {
                 repaint();
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this,
-                    "Ungültige Type-ID", "Fehler", JOptionPane.ERROR_MESSAGE);
+                    "Unvalid Type-ID", "Error", JOptionPane.ERROR_MESSAGE);
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this,
-                    "API-Fehler: "+ex.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE);
+                    "API-Error: "+ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 

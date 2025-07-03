@@ -23,6 +23,7 @@ public class DroneTablePanel extends JPanel {
         model = new DefaultTableModel(columns, 0);
         table = new JTable(model);
         table.setAutoCreateRowSorter(true);
+        table.setDefaultEditor(Object.class, null);
         setLayout(new java.awt.BorderLayout());
         add(new JScrollPane(table), BorderLayout.CENTER);
     }

@@ -12,6 +12,9 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import com.dronesim.api.DataFetcher;
+import com.dronesim.controller.DashboardController;
+import com.dronesim.model.Drone;
 import com.dronesim.viewer.gui.components.CarriageTypeCounterPanel;
 import com.dronesim.viewer.gui.components.DashboardTable;
 import com.dronesim.viewer.gui.components.DroneStatusChartPanel;
@@ -32,46 +35,42 @@ public class DashboardPanel extends JPanel {
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
 
-        java.util.List<com.dronesim.model.Drone> drones = new java.util.ArrayList<>();
+        List<Drone> drones = new ArrayList<>();
         try {
-            com.dronesim.api.DataFetcher fetcher = new com.dronesim.api.DataFetcher();
+            DataFetcher fetcher = new DataFetcher();
             drones = fetcher.fetchAllDrones();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-    // Top: Restart Button
-    JButton restartButton = new JButton("Click here to change login credentials");
-    restartButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            try {
-                String javaBin = System.getProperty("java.home") + "/bin/java";
-                String classPath = System.getProperty("java.class.path");
-
-                List<String> command = new ArrayList<>();
-                command.add(javaBin);
-                command.add("-cp");
-                command.add(classPath);
-                command.add("com.dronesim.Main");
-
-                new ProcessBuilder(command).start();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                javax.swing.JOptionPane.showMessageDialog(null, "Fehler beim Neustart: " + ex.getMessage());
-            }
+        JButton restartButton = new JButton("Click here to change login credentials");
+        restartButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    String javaBin = System.getProperty("java.home") + "/bin/java";
+                    String classPath = System.getProperty("java.class.path");
+                    List<String> command = new ArrayList<>();
+                    command.add(javaBin);
+                    command.add("-cp");
+                    command.add(classPath);
+                    command.add("com.dronesim.Main");
+                    new ProcessBuilder(command).start();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    javax.swing.JOptionPane.showMessageDialog(null, "Fehler beim Neustart: " + ex.getMessage());
+                }
             System.exit(0);
         }
     });
-    
     gbc.gridy = 0;
     gbc.weighty = 0.0;
     add(restartButton, gbc);
 
-    /// Middle: Pie chart, Top 5 ranking, Carriage type counter and weight category panels.
+    DroneStatusChartPanel statusChart = new DroneStatusChartPanel(0, 0, 0);
     JPanel statsPanel = new JPanel(new GridLayout(2, 2, 10, 10));
     statsPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-    statsPanel.add(new DroneStatusChartPanel(10,8,5));
+    statsPanel.add(statusChart);
     statsPanel.add(new TopSpeedRankingPanel());
     statsPanel.add(new CarriageTypeCounterPanel(drones));      
     statsPanel.add(new WeightCategory(drones));                
@@ -80,12 +79,14 @@ public class DashboardPanel extends JPanel {
     gbc.weighty = 0.3; 
     add(statsPanel, gbc);
 
-    // Below: Data table (bottom)
-    DashboardTable tablePanel = new DashboardTable();          
 
+    DashboardTable tablePanel = new DashboardTable();          
     gbc.gridy = 2;
     gbc.weighty = 0.6; 
     add(tablePanel, gbc);
 
+    DashboardController controller = new DashboardController(tablePanel, statusChart);
+    controller.loadDroneData();
+    controller.loadStatusCounts();
     }
 }

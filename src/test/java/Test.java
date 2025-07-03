@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+import com.dronesim.api.DataFetcher;
 import com.dronesim.model.Drone;
 import com.dronesim.model.DroneDynamics;
 import com.dronesim.model.DroneType;
@@ -57,5 +58,8 @@ public class Test {
         System.out.println("\nfirst Dynamics-Objekt:");
             parser.extractFirstObject(dynJson)
             .forEach((key,val) -> System.out.println(key + " = " + val));
+
+
+            new DataFetcher().printDroneStatusSummary();
     }
 }

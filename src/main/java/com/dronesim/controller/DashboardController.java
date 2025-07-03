@@ -9,12 +9,15 @@ import javax.swing.table.DefaultTableModel;
 import com.dronesim.api.DataFetcher;
 import com.dronesim.model.Drone;
 import com.dronesim.viewer.gui.components.DashboardTable;
+import com.dronesim.viewer.gui.components.DroneStatusChartPanel;
 
 public class DashboardController {
    private final DashboardTable view;
+   private final DroneStatusChartPanel statusView;
 
-    public DashboardController(DashboardTable view) {
+    public DashboardController(DashboardTable view, DroneStatusChartPanel statusView) {
         this.view = view;
+        this.statusView = statusView;
     }
 
     /**
@@ -50,4 +53,24 @@ public class DashboardController {
             }
         }.execute();
     } 
+
+    public void loadStatusCounts() {
+        new SwingWorker<int[],Void>() {
+            @Override
+            protected int[] doInBackground() throws Exception {
+                return new DataFetcher().fetchAllDroneStatusCounts();
+            }
+            @Override
+            protected void done() {
+                try {
+                    int[] c = get();  // [online, offline, issue]
+                    statusView.updateCounts(c[0], c[1], c[2]);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.execute();
+    }
+
+    
 }

@@ -19,29 +19,35 @@ import org.jfree.data.general.DefaultPieDataset;
  */
 
 public class DroneStatusChartPanel extends JPanel {
-    private ChartPanel chartPanel;
+    private final DefaultPieDataset<String> dataset = new DefaultPieDataset<>();
+    private final PiePlot plot;
+    private final ChartPanel chartPanel;
+
+    public DroneStatusChartPanel() {
+        this(0, 0, 0);
+    }
 
     public DroneStatusChartPanel(int onlineDroneStatusCount, int offlineDroneStatusCount, int issueDroneStatusCount) {
         setLayout(new BorderLayout());
         setBorder(BorderFactory.createTitledBorder("Drone Status Distribution"));
 
-        DefaultPieDataset<String> dataset = new DefaultPieDataset<>();
         if (onlineDroneStatusCount > 0) dataset.setValue("Online (" + onlineDroneStatusCount + ")", onlineDroneStatusCount);
         if (offlineDroneStatusCount > 0) dataset.setValue("Offline (" + offlineDroneStatusCount + ")", offlineDroneStatusCount);
         if (issueDroneStatusCount > 0) dataset.setValue("Issue (" + issueDroneStatusCount + ")", issueDroneStatusCount);
 
         JFreeChart pieChart = ChartFactory.createPieChart(
-            "Status Overview",
+            null,
             dataset,
             true,
             true,
             false
         );
 
-        PiePlot plot = (PiePlot) pieChart.getPlot();
+        this.plot = (PiePlot) pieChart.getPlot();
         plot.setSectionPaint("Online (" + onlineDroneStatusCount + ")", Color.GREEN);
         plot.setSectionPaint("Offline (" + offlineDroneStatusCount + ")", Color.RED);
         plot.setSectionPaint("Issue (" + issueDroneStatusCount + ")", Color.YELLOW);
+        
         plot.setLabelGenerator(null);
         plot.setBackgroundPaint(Color.WHITE);
         plot.setOutlineVisible(false);
@@ -52,7 +58,20 @@ public class DroneStatusChartPanel extends JPanel {
         chartPanel = new ChartPanel(pieChart);
         chartPanel.setPreferredSize(new Dimension(300, 300));
         add(chartPanel, BorderLayout.CENTER);
+
     }
 
+    public void updateCounts(int online, int offline, int issue) {
+        dataset.clear();
+        if (online  > 0) dataset.setValue("Online ("  + online  + ")", online);
+        if (offline > 0) dataset.setValue("Offline (" + offline + ")", offline);
+        if (issue   > 0) dataset.setValue("Issue ("   + issue   + ")", issue);
+
+        plot.setSectionPaint("Online ("  + online  + ")", Color.GREEN);
+        plot.setSectionPaint("Offline (" + offline + ")", Color.RED);
+        plot.setSectionPaint("Issue ("   + issue   + ")", Color.YELLOW);
+
+        chartPanel.getChart().fireChartChanged();
+    }
 
 }
