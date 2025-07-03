@@ -10,6 +10,9 @@ import javax.swing.JPanel;
 
 import com.dronesim.model.Drone;
 
+/**
+ * A panel that displays the number of drones per carriage type.
+ */
 public class CarriageTypeCounterPanel extends JPanel {
 
     public CarriageTypeCounterPanel(List<Drone> drones) {
@@ -18,7 +21,7 @@ public class CarriageTypeCounterPanel extends JPanel {
         Map<String, Integer> counts = new HashMap<>();
 
         for (Drone d : drones) {
-            String type = d.getCarriage_type();
+            String type = d.getCarriageType();
             if (type != null && !type.isEmpty()) {
                 counts.put(type, counts.getOrDefault(type, 0) + 1);
             }

@@ -35,18 +35,15 @@ public class ApiConfig {
         Properties props = new Properties();
         Path configPath = Path.of("src/main/resources/config.properties");
 
-        // Bestehende Properties laden
         try (InputStream in = Files.newInputStream(configPath)) {
             props.load(in);
         } catch (IOException e) {
             System.err.println("Konnte bestehende Konfiguration nicht laden: " + e.getMessage());
         }
 
-        // Neue Werte setzen
         props.setProperty("api.baseUrl", baseUrl);
         props.setProperty("api.token", token);
 
-        // Datei speichern
         try (OutputStream out = Files.newOutputStream(configPath)) {
             props.store(out, "Updated API configuration");
         } catch (IOException e) {

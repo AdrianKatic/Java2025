@@ -10,9 +10,13 @@ import com.dronesim.model.Drone;
 import com.dronesim.model.DroneDynamics;
 import com.dronesim.model.DroneType;
 
-public class ManualJsonParser implements DataProvider {
+/**
+ * Manually parses simple JSON response into drone-related
+ * Java objects 
+ */
 
-    // get "results" array from json file
+ public class ManualJsonParser implements DataProvider {
+
     private static String extractResultsArray(String fullJson) {
         int idx = fullJson.indexOf("\"results\":");
         if (idx < 0) {
@@ -26,7 +30,6 @@ public class ManualJsonParser implements DataProvider {
         return fullJson.substring(start + 1, end).trim();
     }
 
-    // parssing dronetype-objects from json file
     @Override
     public List<DroneType> parseDroneTypes(String json) throws Exception {
         String array = extractResultsArray(json);
@@ -44,10 +47,10 @@ public class ManualJsonParser implements DataProvider {
             dt.setManufacturer(map.get("manufacturer"));
             dt.setTypename(map.get("typename"));
             dt.setWeight(Integer.parseInt(map.get("weight")));
-            dt.setMax_speed(Integer.parseInt(map.get("max_speed")));
-            dt.setBattery_capacity(Integer.parseInt(map.get("battery_capacity")));
-            dt.setControl_range(Integer.parseInt(map.get("control_range")));
-            dt.setMax_carriage(Integer.parseInt(map.get("max_carriage")));
+            dt.setMaxSpeed(Integer.parseInt(map.get("max_speed")));
+            dt.setBatteryCapacity(Integer.parseInt(map.get("battery_capacity")));
+            dt.setControlRange(Integer.parseInt(map.get("control_range")));
+            dt.setMaxCarriage(Integer.parseInt(map.get("max_carriage")));
             list.add(dt);
         }
         return list;
@@ -68,11 +71,11 @@ public class ManualJsonParser implements DataProvider {
             Map<String, String> map = toMap(item);
             Drone d = new Drone();
             d.setId(Integer.parseInt(map.get("id")));
-            d.setDronetype(map.get("dronetype"));
+            d.setDroneType(map.get("dronetype"));
             d.setCreated(map.get("created"));
             d.setSerialNumber(map.get("serialnumber"));
-            d.setCarriage_weight(Integer.parseInt(map.get("carriage_weight")));
-            d.setCarriage_type(map.get("carriage_type"));
+            d.setCarriageWeight(Integer.parseInt(map.get("carriage_weight")));
+            d.setCarriageType(map.get("carriage_type"));
             list.add(d);
         }
         return list;
@@ -109,7 +112,7 @@ public class ManualJsonParser implements DataProvider {
         return list;
     }
 
-    // transform json object string into a map
+    //Converts a flat JSON object string into a key-value map.
     private static Map<String, String> toMap(String item) {
         Map<String, String> map = new HashMap<>();
         String[] pairs = item.split(",\\s*");
@@ -140,7 +143,7 @@ public class ManualJsonParser implements DataProvider {
         if (array.isEmpty()) {
             return Map.of();
         }
-        // erstes Objekt bis zur passenden schließenden '}'
+    
         String firstRaw = array.split("\\},\\s*\\{")[0]
                 .replaceAll("^[\\{\\s]+|[\\}\\s]+$", "");
         return toMap(firstRaw);

@@ -18,6 +18,9 @@ import com.dronesim.model.DroneOverview;
 import com.dronesim.model.DroneType;
 import com.dronesim.parser.ManualJsonParser;
 
+/**
+ * Fetches drone data from API endpoints and parses it into model objects.
+ */
 
 public class DataFetcher {
     private final ApiClient client;
@@ -30,13 +33,10 @@ public class DataFetcher {
         this.parser = new ManualJsonParser();
     }
 
-
-    /*
-     * @param limit, number of entries to fetch
-     * @param offset, offset for pagination
-     * @param List of parsed DroneDynamics objects
-    */
-
+    /**
+     * Fetches and prints drone dynamics data page by page without user interaction.
+     * Mainly for testing or debugging purposes.
+     */
     
     public void fetchDroneDynamicsWithPagination() throws Exception, InterruptedException {
         String path = "/api/dronedynamics/?limit=20&offset=0";  // Start-URL
@@ -77,7 +77,6 @@ public class DataFetcher {
 
                 String json = client.getJson(path);
                 
-                // List<DroneDynamics> page = parser.parseDynamics(json);
                 parser.parseDynamics(json).forEach(System.out::println);
                 
                 // page.forEach(System.out::println);
@@ -104,6 +103,7 @@ public class DataFetcher {
     }
 
 
+    // Cache drone types to avoid repeated API calls
     public List<DroneDynamics> fetchDroneDynamics(int droneId, int limit, int offset) throws Exception {
     // Dynamics holen
     String path = "/api/" + droneId + "/dynamics/?limit=" + limit + "&offset=" + offset;
@@ -130,7 +130,7 @@ public class DataFetcher {
         if (t != null) {
             dd.setTypeName(t.getTypename());
             double raw = dd.getBatteryStatus();
-            double percent = raw * 100.0 / t.getBattery_capacity();
+            double percent = raw * 100.0 / t.getBatteryCapacity();
             dd.setBatteryStatus(Math.max(0, Math.min(100, percent)));
         } else {
             dd.setTypeName("Unknown");
@@ -146,11 +146,9 @@ public class DataFetcher {
     }
 
     public List<DroneType> fetchAllDroneTypes() throws Exception {
-        // Erstes Request, um Gesamtzahl abzurufen
         String firstJson = client.getJson("/api/dronetypes/?limit=1&offset=0");
         JSONObject firstRoot = new JSONObject(firstJson);
         int total = firstRoot.getInt("count");
-        // Dann alle auf einmal laden
         String json = client.getJson("/api/dronetypes/?limit=" + total + "&offset=0");
         return parser.parseDroneTypes(json);
     }
@@ -183,7 +181,7 @@ public class DataFetcher {
                     // (2) echten Ladezustand in Prozent berechnen
                     double raw = dd.getBatteryStatus();    // roher API-Wert
                     System.out.println("raw: " + raw);
-                    int maxCap = t.getBattery_capacity();  // z.B. 5000 mAh
+                    int maxCap = t.getBatteryCapacity();  // z.B. 5000 mAh
                     System.out.println("maxCap: " + maxCap);
                     double percent = raw / maxCap * 100.0;
                     System.out.println("percent: " + percent);
@@ -235,16 +233,15 @@ public class DataFetcher {
                 int id = Integer.parseInt(m.group(1));
                 Drone d = droneMap.get(id);
                 if (d != null) {
-                    int typeId = Integer.parseInt(d.getDronetype().replaceAll(".*/(\\d+)/?$", "$1"));
-                    DroneType type = typeMap.get(typeId);
+                    DroneType type = typeMap.get(d.getDroneType());
                     DroneOverview overview = new DroneOverview(d,type,dd);
                     overview.setId(d.getId());
                     overview.setSerialNumber(d.getSerialNumber());
-                    overview.setCarriageWeight(d.getCarriage_weight());
-                    overview.setCarriageType(d.getCarriage_type());
+                    overview.setCarriageWeight(d.getCarriageWeight());
+                    overview.setCarriageType(d.getCarriageType());
                     overview.setStatus(dd.getStatus());
                     if (type != null) {
-                        overview.setMaxSpeed(type.getMax_speed());
+                        overview.setMaxSpeed(type.getMaxSpeed());
                         overview.setTypeName(type.getTypename());
                     }
                     result.add(overview);

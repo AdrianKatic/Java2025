@@ -21,6 +21,11 @@ import com.dronesim.viewer.gui.components.DroneDynamicsCard;
 import com.dronesim.viewer.gui.paging.DronePaginationView;
 import com.dronesim.model.DroneDynamicsDataProvider;
 
+/**
+ * A panel that displays drone dynamics data using card components.
+ * Supports pagination, automatic refresh, and shows a timestamp of the last update.
+ */
+
 public class DynamicsPanel extends JPanel implements DronePaginationView<DroneDynamics> {
 
     private final JPanel cardContainer;
@@ -33,11 +38,9 @@ public class DynamicsPanel extends JPanel implements DronePaginationView<DroneDy
     private List<DroneDynamics> currentData;
     private int pageSize = 10;
 
-    // Timer for automatic page refresh//
     private Timer refreshTimer;
     private final int refreshIntervalMs = 5000; // 5 seconds
 
-    // NEW: Last updated timestamp label //
     private final JLabel lastUpdatedLabel = new JLabel("Last updated: --");
 
     public DynamicsPanel() {
@@ -54,10 +57,8 @@ public class DynamicsPanel extends JPanel implements DronePaginationView<DroneDy
         cardContainer = new JPanel(new GridLayout(0, 2, 10, 10));
         add(new JScrollPane(cardContainer), BorderLayout.CENTER);
 
-        // Create nav panel using BorderLayout to support right-aligned timestamp //
         JPanel nav = new JPanel(new BorderLayout());
 
-        // Navigation buttons panel (centered) //
         JPanel navControls = new JPanel(new FlowLayout(FlowLayout.CENTER));
         prevBtn = new JButton("<");
         nextBtn = new JButton(">");
@@ -66,13 +67,12 @@ public class DynamicsPanel extends JPanel implements DronePaginationView<DroneDy
         navControls.add(pageLabel);
         navControls.add(nextBtn);
 
-        // Add components to nav panel //
         nav.add(navControls, BorderLayout.CENTER);
-        nav.add(lastUpdatedLabel, BorderLayout.EAST); // Right side
+        nav.add(lastUpdatedLabel, BorderLayout.EAST); 
 
         add(nav, BorderLayout.SOUTH);
 
-        controller = new DynamicsController(null, this); // Controller init later after input
+        controller = new DynamicsController(null, this); 
 
         prevBtn.addActionListener(e -> {
             if (currentPage > 0) controller.loadPage(currentPage - 1);
@@ -106,7 +106,6 @@ public class DynamicsPanel extends JPanel implements DronePaginationView<DroneDy
         prevBtn.setEnabled(currentPage > 0);
         nextBtn.setEnabled(entries.size() == pageSize);
 
-        // NEW: Update last updated label and log //
         java.time.LocalTime now = java.time.LocalTime.now().withNano(0);
         lastUpdatedLabel.setText("Last updated: " + now);
         System.out.println("[DynamicsPanel] Refreshed at " + now);
@@ -115,7 +114,7 @@ public class DynamicsPanel extends JPanel implements DronePaginationView<DroneDy
         repaint();
     }
 
-    // //
+    
     public void startAutoRefresh() {
         if (refreshTimer != null) {
             refreshTimer.stop();

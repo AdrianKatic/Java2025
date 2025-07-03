@@ -18,6 +18,12 @@ import com.dronesim.viewer.gui.components.DroneStatusChartPanel;
 import com.dronesim.viewer.gui.components.TopSpeedRankingPanel;
 import com.dronesim.viewer.gui.components.WeightCategory;
 
+/**
+ * A dashboard panel that displays key drone statistics and a data table.
+ * Includes a restart button, status pie chart, top speed ranking,
+ * carriage type counts, and weight categories.
+ */
+
 public class DashboardPanel extends JPanel {
     public DashboardPanel() {
         setLayout(new GridBagLayout());
@@ -34,7 +40,7 @@ public class DashboardPanel extends JPanel {
             e.printStackTrace();
         }
 
-    // Oben: Restart Button
+    // Top: Restart Button
     JButton restartButton = new JButton("Drücke hier um die Login-Daten zu wechseln");
     restartButton.addActionListener(new ActionListener() {
         @Override
@@ -62,20 +68,19 @@ public class DashboardPanel extends JPanel {
     gbc.weighty = 0.0;
     add(restartButton, gbc);
 
-    // Mitte: PieChart + Top 5 Rangliste
+    /// Middle: Pie chart, Top 5 ranking, Carriage type counter and weight category panels.
     JPanel statsPanel = new JPanel(new GridLayout(2, 2, 10, 10));
     statsPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
     statsPanel.add(new DroneStatusChartPanel(10,8,5));
     statsPanel.add(new TopSpeedRankingPanel());
-    statsPanel.add(new CarriageTypeCounterPanel(drones));      // neu
-    statsPanel.add(new WeightCategory(drones));                // neu
+    statsPanel.add(new CarriageTypeCounterPanel(drones));      
+    statsPanel.add(new WeightCategory(drones));                
 
-    // 2. Statistik-Panels (mitte)
     gbc.gridy = 1;
-    gbc.weighty = 0.3; // weniger Platz für Statistik
+    gbc.weighty = 0.3; 
     add(statsPanel, gbc);
 
-    // 3. Tabelle (unten)
+    // Below: Data table (bottom)
     DashboardTable tablePanel = new DashboardTable();          
 
     gbc.gridy = 2;

@@ -1,53 +1,39 @@
 package com.dronesim.model;
 
-/**
- * Represents a drone model definition used by individual drones. Holds data
- * such as ID, manufacturer, model name, and maximum speed.
- */
 public class DroneType {
 
-    // Unique ID for the drone model
     private int id;
 
-    // Name of the drone manufacturer
     private String manufacturer;
 
-    // Name or type of the drone (model name or classification)
     private String typename;
 
-    // Weight of the drone in kg
     private int weight;
 
-    // Maximum speed of the drone in km/h
-    private int max_speed;
+    private int maxSpeed;
 
-    // Battery capacity in mAh
-    private int battery_capacity;
+    private int batteryCapacity;
 
-    // Control range in meters
-    private int control_range;
+    private int controlRange;
 
-    // Maximum carriage capacity in kg
-    private int max_carriage;
+    private int maxCarriage;
 
-    // Full constructor – used when creating a drone model with all data
-    public DroneType(int id, String manufacturer, String typename, int weight, int max_speed,
-            int battery_capacity, int control_range, int max_carriage) {
+    public DroneType(int id, String manufacturer, String typename, int weight, int maxSpeed,
+            int batteryCapacity, int controlRange, int maxCarriage) {
         this.id = id;
         this.manufacturer = manufacturer;
         this.typename = typename;
         this.weight = weight;
-        this.max_speed = max_speed;
-        this.battery_capacity = battery_capacity;
-        this.control_range = control_range;
-        this.max_carriage = max_carriage;
+        this.maxSpeed = maxSpeed;
+        this.batteryCapacity = batteryCapacity;
+        this.controlRange = controlRange;
+        this.maxCarriage = maxCarriage;
     }
 
     // Default constructor – required for JSON libraries
     public DroneType() {
     }
 
-    // Getter and setter methods for each attribute
     public int getId() {
         return id;
     }
@@ -80,36 +66,36 @@ public class DroneType {
         this.weight = weight;
     }
 
-    public int getMax_speed() {
-        return max_speed;
+    public int getMaxSpeed() {
+        return maxSpeed;
     }
 
-    public void setMax_speed(int max_speed) {
-        this.max_speed = max_speed;
+    public void setMaxSpeed(int maxSpeed) {
+        this.maxSpeed = maxSpeed;
     }
 
-    public int getBattery_capacity() {
-        return battery_capacity;
+    public int getBatteryCapacity() {
+        return batteryCapacity;
     }
 
-    public void setBattery_capacity(int battery_capacity) {
-        this.battery_capacity = battery_capacity;
+    public void setBatteryCapacity(int batteryCapacity) {
+        this.batteryCapacity = batteryCapacity;
     }
 
-    public int getControl_range() {
-        return control_range;
+    public int getControlRange() {
+        return controlRange;
     }
 
-    public void setControl_range(int control_range) {
-        this.control_range = control_range;
+    public void setControlRange(int controlRange) {
+        this.controlRange = controlRange;
     }
 
-    public int getMax_carriage() {
-        return max_carriage;
+    public int getMaxCarriage() {
+        return maxCarriage;
     }
 
-    public void setMax_carriage(int max_carriage) {
-        this.max_carriage = max_carriage;
+    public void setMaxCarriage(int maxCarriage) {
+        this.maxCarriage = maxCarriage;
     }
 
     @Override
@@ -119,10 +105,10 @@ public class DroneType {
                 + ", manufacturer='" + manufacturer + '\''
                 + ", typename='" + typename + '\''
                 + ", weight=" + weight
-                + ", max_speed=" + max_speed
-                + ", battery_capacity=" + battery_capacity
-                + ", control_range=" + control_range
-                + ", max_carriage=" + max_carriage
+                + ", maxSpeed=" + maxSpeed
+                + ", batteryCapacity=" + batteryCapacity
+                + ", controlRange=" + controlRange
+                + ", maxCarriage=" + maxCarriage
                 + '}';
     }
 
