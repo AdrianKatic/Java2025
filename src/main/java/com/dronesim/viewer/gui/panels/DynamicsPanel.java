@@ -7,20 +7,14 @@ import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.Timer;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import com.dronesim.controller.DynamicsController;
 import com.dronesim.model.DroneDynamics;
+import com.dronesim.model.DroneDynamicsDataProvider;
 import com.dronesim.viewer.gui.components.DroneDynamicsCard;
 import com.dronesim.viewer.gui.paging.DronePaginationView;
-import com.dronesim.model.DroneDynamicsDataProvider;
-import com.dronesim.view.gui.components.DroneIdSelector;
 
 /**
  * A panel that displays drone dynamics data using card components.
@@ -36,8 +30,6 @@ public class DynamicsPanel extends JPanel implements DronePaginationView<DroneDy
     private DynamicsController controller;
 
     private int currentPage = 0;
-    private Timer refreshTimer;
-    private final int refreshIntervalMs = 5000; // 5 seconds
 
     private final JLabel lastUpdatedLabel = new JLabel("Last updated: --");
 
@@ -47,7 +39,7 @@ public class DynamicsPanel extends JPanel implements DronePaginationView<DroneDy
         add(new com.dronesim.viewer.gui.components.DroneIdSelector(droneId -> {
             controller.setProvider(new DroneDynamicsDataProvider(droneId));
             controller.loadPage(0);
-            startAutoRefresh();
+            controller.startAutoRefresh(currentPage);
         }), BorderLayout.NORTH);
 
         cardContainer = new JPanel(new GridLayout(0, 2, 10, 10));
@@ -95,28 +87,5 @@ public class DynamicsPanel extends JPanel implements DronePaginationView<DroneDy
 
         revalidate();
         repaint();
-    }
-
-    
-    public void startAutoRefresh() {
-        if (refreshTimer != null) {
-            refreshTimer.stop();
-        }
-
-        refreshTimer = new Timer(refreshIntervalMs, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (controller != null) {
-                    controller.loadPage(currentPage);
-                }
-            }
-        });
-        refreshTimer.start();
-    }
-
-    public void stopAutoRefresh() {
-        if (refreshTimer != null && refreshTimer.isRunning()) {
-            refreshTimer.stop();
-        }
     }
 }
