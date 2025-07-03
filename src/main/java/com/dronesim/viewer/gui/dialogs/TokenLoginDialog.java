@@ -26,7 +26,7 @@ public class TokenLoginDialog extends JDialog {
     private static final String CONFIG_FILE = "src/main/resources/config.properties";
 
     public TokenLoginDialog(JFrame parent) {
-        super(parent, "Login - API Zugang", true);
+        super(parent, "Login - API", true);
         setLayout(new BorderLayout());
         setSize(400, 220);
         setResizable(false);
@@ -43,7 +43,7 @@ public class TokenLoginDialog extends JDialog {
         urlField = new JTextField();
         tokenField.setPreferredSize(new java.awt.Dimension(400, 25));
         urlField.setPreferredSize(new java.awt.Dimension(400, 25));
-        saveBox = new JCheckBox("Token speichern", true);
+        saveBox = new JCheckBox("Save Token", true);
 
         loadDefaults();
 
