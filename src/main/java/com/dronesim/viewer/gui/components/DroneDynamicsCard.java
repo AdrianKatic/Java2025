@@ -16,7 +16,7 @@ import com.dronesim.model.DroneDynamics;
  * A UI panel that displays detailed drone dynamics information in a card format.
  */
 public class DroneDynamicsCard extends JPanel{
-    private static final DecimalFormat BATTERY_FORMAT = new DecimalFormat("0.00");
+    private static final DecimalFormat BATTERY_FORMAT = new DecimalFormat("0");
 
     public DroneDynamicsCard(DroneDynamics dyn) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));

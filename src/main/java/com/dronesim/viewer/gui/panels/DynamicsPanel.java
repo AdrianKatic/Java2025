@@ -35,9 +35,6 @@ public class DynamicsPanel extends JPanel implements DronePaginationView<DroneDy
     private DynamicsController controller;
 
     private int currentPage = 0;
-    private List<DroneDynamics> currentData;
-    private int pageSize = 10;
-
     private Timer refreshTimer;
     private final int refreshIntervalMs = 5000; // 5 seconds
 
@@ -94,9 +91,6 @@ public class DynamicsPanel extends JPanel implements DronePaginationView<DroneDy
     @Override
     public void updatePage(List<DroneDynamics> entries, int currentPage, int pageSize) {
         this.currentPage = currentPage;
-        this.pageSize = pageSize;
-        this.currentData = entries;
-
         cardContainer.removeAll();
         for (DroneDynamics dyn : entries) {
             cardContainer.add(new DroneDynamicsCard(dyn));
