@@ -24,7 +24,6 @@ public class Drone {
 
     }
 
-    // Default constructor – required for JSON libraries
     public Drone() {
     }
 

@@ -72,14 +72,11 @@ public class DataFetcher {
             String path = "/api/" + droneId + "/dynamics/?limit=" + limit + "&offset=0";
 
             while (path != null) {
-                // Debug
                 System.out.println("DEBUG " + path);
 
                 String json = client.getJson(path);
                 
                 parser.parseDynamics(json).forEach(System.out::println);
-                
-                // page.forEach(System.out::println);
 
                 String nextRaw = new JSONObject(json).optString("next", null);
 
@@ -176,12 +173,10 @@ public class DataFetcher {
                 int id = Integer.parseInt(m.group(1));
                 DroneType t = typeCache.get(id);
                 if (t != null) {
-                    // (1) Typnamen setzen
                     dd.setTypeName(t.getTypename());
-                    // (2) echten Ladezustand in Prozent berechnen
-                    double raw = dd.getBatteryStatus();    // roher API-Wert
+                    double raw = dd.getBatteryStatus();
                     System.out.println("raw: " + raw);
-                    int maxCap = t.getBatteryCapacity();  // z.B. 5000 mAh
+                    int maxCap = t.getBatteryCapacity();
                     System.out.println("maxCap: " + maxCap);
                     double percent = raw / maxCap * 100.0;
                     System.out.println("percent: " + percent);
@@ -200,12 +195,10 @@ public class DataFetcher {
 
     
     public List<Drone> fetchAllDrones() throws Exception {
-        // Erstes Request, um Gesamtzahl abzurufen
         String firstJson = client.getJson("/api/drones/?limit=1&offset=0");
         JSONObject firstRoot = new JSONObject(firstJson);
         int total = firstRoot.getInt("count");
 
-        // Dann alle auf einmal laden
         String json = client.getJson("/api/drones/?limit=" + total + "&offset=0");
         return parser.parseDrones(json);
     }

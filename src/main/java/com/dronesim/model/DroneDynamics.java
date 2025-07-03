@@ -39,7 +39,6 @@ public class DroneDynamics {
         this.status = status;
     }
 
-    // Default constructor – required for JSON libraries
     public DroneDynamics() {
     }
 

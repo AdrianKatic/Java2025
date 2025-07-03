@@ -30,7 +30,6 @@ public class DroneType {
         this.maxCarriage = maxCarriage;
     }
 
-    // Default constructor – required for JSON libraries
     public DroneType() {
     }
 

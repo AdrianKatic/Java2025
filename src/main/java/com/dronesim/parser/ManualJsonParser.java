@@ -130,8 +130,10 @@ import com.dronesim.model.DroneType;
         if (array.isEmpty()) {
             return List.of();
         }
-
-        // @return first object form json
+        /*
+         * @return first object form json
+         */
+         
         String first = array.split("\\},\\s*\\{")[0]
                 .replaceAll("^[\\{\\s]+|[\\}\\s]+$", "");
         Map<String, String> map = toMap(first);
