@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
+import javax.swing.Timer;
 
 import com.dronesim.model.DroneDynamics;
 import com.dronesim.model.PagedDataProvider;
@@ -14,6 +15,10 @@ public class DynamicsController {
     private final DronePaginationView<DroneDynamics> view;
     private final int PAGE_SIZE = 10;
 
+    private Timer refreshTimer;
+    private int currentPage = 0;
+    private final int refreshIntervalMs = 5000;
+
     public DynamicsController(PagedDataProvider<DroneDynamics> provider, DronePaginationView<DroneDynamics> view) {
         this.provider = provider;
         this.view = view;
@@ -22,6 +27,7 @@ public class DynamicsController {
     /**
      * Loads a page of drone dynamics data using a SwingWorker.
      * Updates the view with the result or shows an error dialog if loading fails.
+     * Holds the function auto refresh.
      */
     
     public void setProvider(PagedDataProvider<DroneDynamics> provider) {
@@ -64,5 +70,19 @@ public class DynamicsController {
             }
         };
         worker.execute();
+        this.currentPage = page;
+    }
+
+    public void startAutoRefresh(int page) {
+        if (refreshTimer != null) refreshTimer.stop();
+        currentPage = page;
+        refreshTimer = new Timer(refreshIntervalMs, e -> loadPage(currentPage));
+        refreshTimer.start();
+    }
+
+    public void stopAutoRefresh() {
+        if (refreshTimer != null && refreshTimer.isRunning()) {
+            refreshTimer.stop();
+        }
     }
 }

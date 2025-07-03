@@ -36,12 +36,6 @@ public class TopSpeedRankingPanel extends JPanel {
                 try {
                     List<DroneType> droneTypeList = get();
 
-                    //System.out.println("Übersicht empfangen: " + droneTypeList.size());
-                    //droneTypeList.forEach(o -> {
-                    //    System.out.println("Name: " + (o != null ? o.getTypename() : "null") + 
-                    //                       ", Max Speed: " + (o != null ? o.getMaxSpeed() : "null"));
-                    //});
-
                     removeAll();
                     int[] rank = {1}; 
                     droneTypeList.stream()

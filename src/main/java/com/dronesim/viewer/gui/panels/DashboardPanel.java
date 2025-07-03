@@ -41,7 +41,7 @@ public class DashboardPanel extends JPanel {
         }
 
     // Top: Restart Button
-    JButton restartButton = new JButton("Drücke hier um die Login-Daten zu wechseln");
+    JButton restartButton = new JButton("Click here to change login credentials");
     restartButton.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
