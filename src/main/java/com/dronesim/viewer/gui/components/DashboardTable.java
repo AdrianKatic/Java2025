@@ -10,7 +10,6 @@ import javax.swing.table.DefaultTableModel;
 
 public class DashboardTable extends JPanel{
 
-
     private final DefaultTableModel model;
     private final JTable table;
 
@@ -21,6 +20,7 @@ public class DashboardTable extends JPanel{
         String[] columns = {"ID", "Serial number", "Carriage weight", "Carriage type"};
         model = new DefaultTableModel(columns, 0);
         table = new JTable(model);
+        table.setDefaultEditor(Object.class, null);
         add(new JScrollPane(table), BorderLayout.CENTER);
     }
     
