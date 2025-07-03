@@ -27,7 +27,7 @@ public class Main {
                 String url = dialog.getUrl();
 
                 if (token == null || token.isEmpty() || url == null || url.isEmpty()) {
-                    JOptionPane.showMessageDialog(null, "Token oder URL nicht eingegeben.");
+                    JOptionPane.showMessageDialog(null, "Token or URL not entered.");
                     System.exit(0);
                 }
 
@@ -36,7 +36,7 @@ public class Main {
                 app.setVisible(true);
 
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, "Fehler beim Start: " + e.getMessage());
+                JOptionPane.showMessageDialog(null, "Error at start: " + e.getMessage());
                 e.printStackTrace();
                 System.exit(1);
             }

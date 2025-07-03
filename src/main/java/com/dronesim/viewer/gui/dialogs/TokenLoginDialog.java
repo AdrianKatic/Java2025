@@ -62,8 +62,8 @@ public class TokenLoginDialog extends JDialog {
         gbc.gridx = 1;
         inputPanel.add(saveBox, gbc);
 
-        JButton okBtn = new JButton("Verbinden");
-        JButton cancelBtn = new JButton("Abbrechen");
+        JButton okBtn = new JButton("Connect");
+        JButton cancelBtn = new JButton("Cancel");
         JPanel btnPanel = new JPanel();
         btnPanel.add(okBtn);
         btnPanel.add(cancelBtn);
