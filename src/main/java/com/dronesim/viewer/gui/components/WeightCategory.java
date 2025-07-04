@@ -9,10 +9,6 @@ import javax.swing.JPanel;
 
 import com.dronesim.model.Drone;
 
-/**
- * A panel that categorizes and displays the number of drones
- * by their carriage weight (light, middle, heavy).
- */
 
 public class WeightCategory extends JPanel {
 

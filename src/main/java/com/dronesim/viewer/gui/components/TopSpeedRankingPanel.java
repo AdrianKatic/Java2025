@@ -11,9 +11,6 @@ import javax.swing.JPanel;
 import com.dronesim.model.DroneOverview;
 import com.dronesim.model.DroneType;
 
-/**
- * A panel that displays the top 5 fastest drones based on their maximum speed.
- */
 public class TopSpeedRankingPanel extends JPanel {
     public TopSpeedRankingPanel() {
         setPreferredSize(new Dimension(300, 200));

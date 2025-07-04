@@ -7,9 +7,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
-/**
- * A panel that displays a sortable table of drone details using a JTable.
- */
 
 public class DroneTablePanel extends JPanel {
     private final JTable table;

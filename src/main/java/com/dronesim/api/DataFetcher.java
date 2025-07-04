@@ -9,7 +9,6 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.dronesim.model.Drone;
@@ -31,32 +30,7 @@ public class DataFetcher {
     }
 
 
-    public void fetchDroneDynamicsWithPagination() throws Exception, InterruptedException {
-        String path = "/api/dronedynamics/?limit=20&offset=0";  // Start-URL
 
-        while (path != null) {
-            String jsonResponse = client.getJson(path);
-            List<DroneDynamics> droneDynamics = new ManualJsonParser().parseDynamics(jsonResponse);
-            droneDynamics.forEach(System.out::println);
-            path = extractNextPageUrl(jsonResponse);
-
-        }
-    }
-    
-
-    private String extractNextPageUrl(String jsonResponse) {
-        try {
-            JSONObject json = new JSONObject(jsonResponse);
-            if (json.has("next") && json.getString("next") != null) {
-                return json.getString("next");
-            } else {
-                return null;
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
 
 
     public void fetchDroneDynamicsWithPaginationConfirmation(int limit, int droneId) throws Exception {
@@ -94,44 +68,28 @@ public class DataFetcher {
 
 
     public List<DroneDynamics> fetchDroneDynamics(int droneId, int limit, int offset) throws Exception {
-    // 1) load the paged dynamics for exactly that drone
-    String dynJson = client.getJson(
-        "/api/" + droneId + "/dynamics/?limit=" + limit + "&offset=" + offset
-    );
-    List<DroneDynamics> list = parser.parseDynamics(dynJson);
-
-    // 2) fill typeCache once
-    if (typeCache.isEmpty()) {
-        String typesJson = client.getJson("/api/dronetypes/?limit=100&offset=0");
-        for (DroneType t : parser.parseDroneTypes(typesJson)) {
-            typeCache.put(t.getId(), t);
+        String dynJson = client.getJson(
+            "/api/" + droneId + "/dynamics/?limit=" + limit + "&offset=" + offset
+        );
+        List<DroneDynamics> list = parser.parseDynamics(dynJson);
+        ensureTypeCache();
+        String singleDroneJson = client.getJson("/api/drones/" + droneId + "/");
+        String typeUrl = new JSONObject(singleDroneJson).getString("dronetype");
+        int typeId = Integer.parseInt(typeUrl.replaceAll(".*/(\\d+)/?$", "$1"));
+        DroneType dt = typeCache.get(typeId);
+        for (DroneDynamics dd : list) {
+            if (dt != null) {
+                dd.setTypeName(dt.getTypename());
+                double raw = dd.getBatteryStatus();
+                double cap = dt.getBatteryCapacity();
+                double pct = (cap > 0) ? raw * 100.0 / cap : 0;
+                dd.setBatteryStatus(Math.max(0, Math.min(100, pct)));
+            } else {
+                dd.setTypeName("Unknown");
+            }
         }
+        return list;
     }
-
-    // 3) fetch *this* drone’s record so we can read its dronetype URL
-    String singleDroneJson = client.getJson("/api/drones/" + droneId + "/");
-    String typeUrl = new JSONObject(singleDroneJson).getString("dronetype");
-    int typeId = Integer.parseInt(typeUrl.replaceAll(".*/(\\d+)/?$", "$1"));
-
-    // 4) look up that DroneType
-    DroneType dt = typeCache.get(typeId);
-
-    // 5) annotate all of the dynamics entries
-    for (DroneDynamics dd : list) {
-        if (dt != null) {
-            dd.setTypeName(dt.getTypename());
-            double raw = dd.getBatteryStatus();
-            double cap = dt.getBatteryCapacity();
-            double pct = (cap > 0) ? raw * 100.0 / cap : 0;
-            // clamp 0–100
-            dd.setBatteryStatus(Math.max(0, Math.min(100, pct)));
-        } else {
-            dd.setTypeName("Unknown");
-        }
-    }
-
-    return list;
-}
 
 
 
@@ -142,11 +100,7 @@ public class DataFetcher {
     }
 
     public List<DroneType> fetchAllDroneTypes() throws Exception {
-        String firstJson = client.getJson("/api/dronetypes/?limit=1&offset=0");
-        JSONObject firstRoot = new JSONObject(firstJson);
-        int total = firstRoot.getInt("count");
-        String json = client.getJson("/api/dronetypes/?limit=" + total + "&offset=0");
-        return parser.parseDroneTypes(json);
+        return fetchAllItems("/api/dronetypes/", parser::parseDroneTypes);
     }
 
 
@@ -154,19 +108,11 @@ public class DataFetcher {
         String path = "/api/dronedynamics/?limit=" + limit + "&offset=" + offset;
         String json = client.getJson(path);
         List<DroneDynamics> list = parser.parseDynamics(json);
-
-        if (typeCache.isEmpty()) {
-            String typesJson = client.getJson("/api/dronetypes/?limit=100&offset=0");
-            List<DroneType> types = parser.parseDroneTypes(typesJson);
-            for (DroneType t : types) {
-                typeCache.put(t.getId(), t);
-            }
-        }
-
+        ensureTypeCache();
         for (DroneDynamics dd : list) {
             String url = dd.getDrone();
             URI uri = URI.create(url);
-            Pattern p = Pattern.compile(".*/(\\d+)/?$");
+            Pattern p = Pattern.compile(".*/(\\d+)/?$", Pattern.CASE_INSENSITIVE);
             Matcher m = p.matcher(uri.getPath());
             if (m.find()) {
                 int id = Integer.parseInt(m.group(1));
@@ -174,32 +120,44 @@ public class DataFetcher {
                 if (t != null) {
                     dd.setTypeName(t.getTypename());
                     double raw = dd.getBatteryStatus();
-                    System.out.println("raw: " + raw);
                     int maxCap = t.getBatteryCapacity();
-                    System.out.println("maxCap: " + maxCap);
-                    double percent = raw / maxCap * 100.0;
-                    System.out.println("percent: " + percent);
-                    dd.setBatteryStatus(percent);
+                    double percent = (maxCap > 0) ? raw / maxCap * 100.0 : 0;
+                    dd.setBatteryStatus(Math.max(0, Math.min(100, percent)));
                 } else {
                     dd.setTypeName("Unknown");
-                } 
+                }
             } else {
                 dd.setTypeName("Unknown");
             }
-
         }
-
         return list;
+    }
+
+    private void ensureTypeCache() throws Exception {
+        if (typeCache.isEmpty()) {
+            List<DroneType> types = fetchAllDroneTypes();
+            for (DroneType t : types) {
+                typeCache.put(t.getId(), t);
+            }
+        }
     }
 
     
     public List<Drone> fetchAllDrones() throws Exception {
-        String firstJson = client.getJson("/api/drones/?limit=1&offset=0");
+        return fetchAllItems("/api/drones/", parser::parseDrones);
+    }
+
+    private <T> List<T> fetchAllItems(String basePath, ParserFunction<String, List<T>> parserFunc) throws Exception {
+        String firstJson = client.getJson(basePath + "?limit=1&offset=0");
         JSONObject firstRoot = new JSONObject(firstJson);
         int total = firstRoot.getInt("count");
+        String json = client.getJson(basePath + "?limit=" + total + "&offset=0");
+        return parserFunc.apply(json);
+    }
 
-        String json = client.getJson("/api/drones/?limit=" + total + "&offset=0");
-        return parser.parseDrones(json);
+    @FunctionalInterface
+    private interface ParserFunction<T, R> {
+        R apply(T t) throws Exception;
     }
 
     public List<DroneOverview> fetchAllDroneOverviews() throws Exception {
@@ -265,27 +223,4 @@ public class DataFetcher {
         return new int[]{ online, offline, issue };
     }
 
-    // Debug Check
-    public void printDroneStatusSummary() throws Exception {
-        List<Drone> drones = fetchAllDrones();
-        int online = 0, offline = 0, issue = 0;
-
-        System.out.println("Serialnumbers ---- ");
-        for (Drone d : drones) {
-            List<DroneDynamics> dyns = fetchDroneDynamicsForDrone(d.getId(), 1, 0);
-            String status = dyns.isEmpty() ? "(no data)" : dyns.get(0).getStatus();
-            System.out.printf("ID=%d  SN=%s  Status=%s%n", d.getId(), d.getSerialNumber(), status);
-
-            switch (status) {
-                case "ON" -> online++;
-                case "OF" -> offline++;
-                case "IS" -> issue++;
-            }
-        }
-
-        System.out.println("\n=== Gesamt ===");
-        System.out.printf("Online:  %d%n", online);
-        System.out.printf("Offline: %d%n", offline);
-        System.out.printf("Issue:   %d%n", issue);
-    }
 }

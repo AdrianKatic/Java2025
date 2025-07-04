@@ -16,10 +16,6 @@ import com.dronesim.model.DroneDynamicsDataProvider;
 import com.dronesim.viewer.gui.components.DroneDynamicsCard;
 import com.dronesim.viewer.gui.paging.DronePaginationView;
 
-/**
- * A panel that displays drone dynamics data using card components.
- * Supports pagination, automatic refresh, and shows a timestamp of the last update.
- */
 
 public class DynamicsPanel extends JPanel implements DronePaginationView<DroneDynamics> {
 

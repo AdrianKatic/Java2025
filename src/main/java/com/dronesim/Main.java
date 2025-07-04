@@ -7,10 +7,6 @@ import javax.swing.SwingUtilities;
 import com.dronesim.viewer.gui.dialogs.TokenLoginDialog;
 import com.dronesim.viewer.gui.frame.MainFrame;
 
-/**
- * Application entry point for the Drone Dashboard.
- * Opens the login dialog and starts the main GUI if login data is provided.
- */
 
 public class Main {
     public static void main(String[] args) {
