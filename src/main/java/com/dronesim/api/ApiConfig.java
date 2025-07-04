@@ -12,13 +12,11 @@ public class ApiConfig {
     private final String token;
 
     public ApiConfig() {
-        // load config.properties from classpath
         try (InputStream in = getClass().getClassLoader().getResourceAsStream("config.properties")) {
             if (in == null) throw new RuntimeException("config.properties not found");
             Properties props = new Properties();
             props.load(in);
 
-            // read required properties
             this.baseUrl = props.getProperty("api.baseUrl");
             this.token = props.getProperty("api.token");
 

@@ -108,7 +108,6 @@ import com.dronesim.model.DroneType;
         return list;
     }
 
-    //Converts a flat JSON object string into a key-value map.
     private static Map<String, String> toMap(String item) {
         Map<String, String> map = new HashMap<>();
         String[] pairs = item.split(",\\s*");

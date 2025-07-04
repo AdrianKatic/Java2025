@@ -20,10 +20,6 @@ public class DashboardController {
         this.statusView = statusView;
     }
 
-    /**
-     * Loads drone data in the background with Swingworker and updates the table.
-     * Shows an error dialog if loading fails.
-     */
     public void loadDroneData() {
         new SwingWorker<List<Drone>, Void>() {
             @Override
@@ -36,7 +32,7 @@ public class DashboardController {
                 try {
                     List<Drone> drones = get();
                     DefaultTableModel model = view.getModel();
-                    model.setRowCount(0); // deletes alle entries
+                    model.setRowCount(0);
                     for (Drone d : drones) {
                         model.addRow(new Object[]{
                                 d.getId(),
@@ -63,7 +59,7 @@ public class DashboardController {
             @Override
             protected void done() {
                 try {
-                    int[] c = get();  // [online, offline, issue]
+                    int[] c = get();
                     statusView.updateCounts(c[0], c[1], c[2]);
                 } catch (Exception e) {
                     e.printStackTrace();

@@ -3,9 +3,6 @@ package com.dronesim.api;
 import com.dronesim.model.*;
 import java.util.List;
 
-/*
- * Converts raw JSON into model objects
- */
 
 public interface DataProvider {
     List<DroneType> parseDroneTypes(String json) throws Exception;

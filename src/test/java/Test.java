@@ -28,16 +28,16 @@ public class Test {
         List<DroneDynamics> dyn = parser.parseDynamics(dynJson);
         System.out.println("Loaded Dynamics: "   + dyn.size());
 
-        // extraxt all labels and print
-        System.out.println("lables in dronetypes.json:");
+        // extract all labels and print
+        System.out.println("labels in dronetypes.json:");
         parser.extractLabels(typesJson)
               .forEach(name -> System.out.println(" • " + name));
 
-        System.out.println("\nlables in drones.json:");
+        System.out.println("\nlabels in drones.json:");
         parser.extractLabels(dronesJson)
               .forEach(name -> System.out.println(" • " + name));
 
-        System.out.println("\nlables in dynamics.json:");
+        System.out.println("\nlabels in dynamics.json:");
         parser.extractLabels(dynJson)
               .forEach(name -> System.out.println(" • " + name));
 
@@ -45,18 +45,18 @@ public class Test {
         types.size(), drones.size(), dyn.size());
 
 
-        // extract first object form each json
+        // extract first object from each json
         System.out.println("first DroneType-Object:");
-            parser.extractFirstObject(typesJson)
-                .forEach((key,val) -> System.out.println(key + " = " + val));
+        parser.extractFirstObject(typesJson)
+            .forEach((key, val) -> System.out.println(key + " = " + val));
 
-        System.out.println("\nfirst Drone-Objekt:");
-            parser.extractFirstObject(dronesJson)
-                .forEach((key,val) -> System.out.println(key + " = " + val));
+        System.out.println("\nfirst Drone-Object:");
+        parser.extractFirstObject(dronesJson)
+            .forEach((key, val) -> System.out.println(key + " = " + val));
 
-        System.out.println("\nfirst Dynamics-Objekt:");
-            parser.extractFirstObject(dynJson)
-            .forEach((key,val) -> System.out.println(key + " = " + val));
+        System.out.println("\nfirst Dynamics-Object:");
+        parser.extractFirstObject(dynJson)
+            .forEach((key, val) -> System.out.println(key + " = " + val));
 
 
     }
