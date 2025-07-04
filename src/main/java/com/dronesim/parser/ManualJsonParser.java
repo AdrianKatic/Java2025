@@ -10,10 +10,6 @@ import com.dronesim.model.Drone;
 import com.dronesim.model.DroneDynamics;
 import com.dronesim.model.DroneType;
 
-/**
- * Manually parses simple JSON response into drone-related
- * Java objects 
- */
 
  public class ManualJsonParser implements DataProvider {
 

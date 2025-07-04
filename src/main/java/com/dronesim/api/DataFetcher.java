@@ -18,9 +18,6 @@ import com.dronesim.model.DroneOverview;
 import com.dronesim.model.DroneType;
 import com.dronesim.parser.ManualJsonParser;
 
-/**
- * Fetches drone data from API endpoints and parses it into model objects.
- */
 
 public class DataFetcher {
     private final ApiClient client;
@@ -33,10 +30,6 @@ public class DataFetcher {
         this.parser = new ManualJsonParser();
     }
 
-    /**
-     * Fetches and prints drone dynamics data page by page without user interaction.
-     * Mainly for testing or debugging purposes.
-    */
 
     public void fetchDroneDynamicsWithPagination() throws Exception, InterruptedException {
         String path = "/api/dronedynamics/?limit=20&offset=0";  // Start-URL
