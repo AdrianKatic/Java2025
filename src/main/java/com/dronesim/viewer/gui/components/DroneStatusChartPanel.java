@@ -14,7 +14,11 @@ import org.jfree.chart.plot.PiePlot;
 import org.jfree.chart.ui.RectangleInsets;
 import org.jfree.data.general.DefaultPieDataset;
 
+/**
+ * Shows a pie chart of drone status (ON, OFF, IS).
+ */
 public class DroneStatusChartPanel extends JPanel {
+
     private final DefaultPieDataset<String> dataset = new DefaultPieDataset<>();
     private final PiePlot plot;
     private final ChartPanel chartPanel;
@@ -27,23 +31,29 @@ public class DroneStatusChartPanel extends JPanel {
         setLayout(new BorderLayout());
         setBorder(BorderFactory.createTitledBorder("Drone Status Distribution"));
 
-        if (onlineDroneStatusCount > 0) dataset.setValue("Online (" + onlineDroneStatusCount + ")", onlineDroneStatusCount);
-        if (offlineDroneStatusCount > 0) dataset.setValue("Offline (" + offlineDroneStatusCount + ")", offlineDroneStatusCount);
-        if (issueDroneStatusCount > 0) dataset.setValue("Issue (" + issueDroneStatusCount + ")", issueDroneStatusCount);
+        if (onlineDroneStatusCount > 0) {
+            dataset.setValue("Online (" + onlineDroneStatusCount + ")", onlineDroneStatusCount);
+        }
+        if (offlineDroneStatusCount > 0) {
+            dataset.setValue("Offline (" + offlineDroneStatusCount + ")", offlineDroneStatusCount);
+        }
+        if (issueDroneStatusCount > 0) {
+            dataset.setValue("Issue (" + issueDroneStatusCount + ")", issueDroneStatusCount);
+        }
 
         JFreeChart pieChart = ChartFactory.createPieChart(
-            null,
-            dataset,
-            true,
-            true,
-            false
+                null,
+                dataset,
+                true,
+                true,
+                false
         );
 
         this.plot = (PiePlot) pieChart.getPlot();
         plot.setSectionPaint("Online (" + onlineDroneStatusCount + ")", Color.GREEN);
         plot.setSectionPaint("Offline (" + offlineDroneStatusCount + ")", Color.RED);
         plot.setSectionPaint("Issue (" + issueDroneStatusCount + ")", Color.YELLOW);
-        
+
         plot.setLabelGenerator(null);
         plot.setBackgroundPaint(Color.WHITE);
         plot.setOutlineVisible(false);
@@ -59,13 +69,19 @@ public class DroneStatusChartPanel extends JPanel {
 
     public void updateCounts(int online, int offline, int issue) {
         dataset.clear();
-        if (online  > 0) dataset.setValue("Online ("  + online  + ")", online);
-        if (offline > 0) dataset.setValue("Offline (" + offline + ")", offline);
-        if (issue   > 0) dataset.setValue("Issue ("   + issue   + ")", issue);
+        if (online > 0) {
+            dataset.setValue("Online (" + online + ")", online);
+        }
+        if (offline > 0) {
+            dataset.setValue("Offline (" + offline + ")", offline);
+        }
+        if (issue > 0) {
+            dataset.setValue("Issue (" + issue + ")", issue);
+        }
 
-        plot.setSectionPaint("Online ("  + online  + ")", Color.GREEN);
+        plot.setSectionPaint("Online (" + online + ")", Color.GREEN);
         plot.setSectionPaint("Offline (" + offline + ")", Color.RED);
-        plot.setSectionPaint("Issue ("   + issue   + ")", Color.YELLOW);
+        plot.setSectionPaint("Issue (" + issue + ")", Color.YELLOW);
 
         chartPanel.getChart().fireChartChanged();
     }

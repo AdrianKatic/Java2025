@@ -22,12 +22,10 @@ import com.dronesim.viewer.gui.components.TopSpeedRankingPanel;
 import com.dronesim.viewer.gui.components.WeightCategory;
 
 /**
- * A dashboard panel that displays key drone statistics and a data table.
- * Includes a restart button, status pie chart, top speed ranking,
- * carriage type counts, and weight categories.
+ * Dashboard view with chart, top speed and table.
  */
-
 public class DashboardPanel extends JPanel {
+
     public DashboardPanel() {
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -60,33 +58,32 @@ public class DashboardPanel extends JPanel {
                     ex.printStackTrace();
                     javax.swing.JOptionPane.showMessageDialog(null, "Fehler beim Neustart: " + ex.getMessage());
                 }
-            System.exit(0);
-        }
-    });
-    gbc.gridy = 0;
-    gbc.weighty = 0.0;
-    add(restartButton, gbc);
+                System.exit(0);
+            }
+        });
+        gbc.gridy = 0;
+        gbc.weighty = 0.0;
+        add(restartButton, gbc);
 
-    DroneStatusChartPanel statusChart = new DroneStatusChartPanel(0, 0, 0);
-    JPanel statsPanel = new JPanel(new GridLayout(2, 2, 10, 10));
-    statsPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-    statsPanel.add(statusChart);
-    statsPanel.add(new TopSpeedRankingPanel());
-    statsPanel.add(new CarriageTypeCounterPanel(drones));      
-    statsPanel.add(new WeightCategory(drones));                
+        DroneStatusChartPanel statusChart = new DroneStatusChartPanel(0, 0, 0);
+        JPanel statsPanel = new JPanel(new GridLayout(2, 2, 10, 10));
+        statsPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        statsPanel.add(statusChart);
+        statsPanel.add(new TopSpeedRankingPanel());
+        statsPanel.add(new CarriageTypeCounterPanel(drones));
+        statsPanel.add(new WeightCategory(drones));
 
-    gbc.gridy = 1;
-    gbc.weighty = 0.3; 
-    add(statsPanel, gbc);
+        gbc.gridy = 1;
+        gbc.weighty = 0.3;
+        add(statsPanel, gbc);
 
+        DashboardTable tablePanel = new DashboardTable();
+        gbc.gridy = 2;
+        gbc.weighty = 0.6;
+        add(tablePanel, gbc);
 
-    DashboardTable tablePanel = new DashboardTable();          
-    gbc.gridy = 2;
-    gbc.weighty = 0.6; 
-    add(tablePanel, gbc);
-
-    DashboardController controller = new DashboardController(tablePanel, statusChart);
-    controller.loadDroneData();
-    controller.loadStatusCounts();
+        DashboardController controller = new DashboardController(tablePanel, statusChart);
+        controller.loadDroneData();
+        controller.loadStatusCounts();
     }
 }

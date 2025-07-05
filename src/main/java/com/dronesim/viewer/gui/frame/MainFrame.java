@@ -4,7 +4,11 @@ import javax.swing.JFrame;
 
 import com.dronesim.viewer.gui.panels.MainTabbedPanel;
 
-public class MainFrame extends JFrame{
+/**
+ * Main app window with all panels inside.
+ */
+public class MainFrame extends JFrame {
+
     public MainFrame() {
         setTitle("Drone Dashboard");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

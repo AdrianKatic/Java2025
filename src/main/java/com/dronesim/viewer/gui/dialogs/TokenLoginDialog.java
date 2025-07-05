@@ -18,7 +18,11 @@ import javax.swing.JTextField;
 
 import com.dronesim.api.ApiConfig;
 
+/**
+ * Dialog for entering and saving the API token.
+ */
 public class TokenLoginDialog extends JDialog {
+
     private JTextField tokenField;
     private JTextField urlField;
     private JCheckBox saveBox;
@@ -47,17 +51,24 @@ public class TokenLoginDialog extends JDialog {
 
         loadDefaults();
 
-        gbc.gridx = 0; gbc.gridy = 0; gbc.weightx = 0;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 0;
         inputPanel.add(new JLabel("API Token:"), gbc);
-        gbc.gridx = 1; gbc.weightx = 1.0;
+        gbc.gridx = 1;
+        gbc.weightx = 1.0;
         inputPanel.add(tokenField, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 1; gbc.weightx = 0;
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.weightx = 0;
         inputPanel.add(new JLabel("API URL:"), gbc);
-        gbc.gridx = 1; gbc.weightx = 1.0;
+        gbc.gridx = 1;
+        gbc.weightx = 1.0;
         inputPanel.add(urlField, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 2;
+        gbc.gridx = 0;
+        gbc.gridy = 2;
         inputPanel.add(new JLabel(), gbc);
         gbc.gridx = 1;
         inputPanel.add(saveBox, gbc);
@@ -71,7 +82,6 @@ public class TokenLoginDialog extends JDialog {
         add(inputPanel, BorderLayout.CENTER);
         add(btnPanel, BorderLayout.SOUTH);
 
-
         okBtn.addActionListener(e -> {
             String token = getToken();
             String url = getUrl();
@@ -83,9 +93,14 @@ public class TokenLoginDialog extends JDialog {
             try {
                 com.dronesim.api.ApiConfig testConfig = new com.dronesim.api.ApiConfig() {
                     @Override
-                    public String getBaseUrl() { return url; }
+                    public String getBaseUrl() {
+                        return url;
+                    }
+
                     @Override
-                    public String getToken() { return token; }
+                    public String getToken() {
+                        return token;
+                    }
                 };
                 com.dronesim.api.ApiClient testClient = new com.dronesim.api.ApiClient(testConfig);
                 if (!testClient.testConnection()) {
@@ -97,7 +112,9 @@ public class TokenLoginDialog extends JDialog {
                 return;
             }
             confirmed = true;
-            if (saveBox.isSelected()) ApiConfig.overrideAndSave(url, token);
+            if (saveBox.isSelected()) {
+                ApiConfig.overrideAndSave(url, token);
+            }
             dispose();
         });
 
@@ -113,7 +130,8 @@ public class TokenLoginDialog extends JDialog {
             props.load(in);
             tokenField.setText(props.getProperty("api.token", ""));
             urlField.setText(props.getProperty("api.baseUrl", ""));
-        } catch (IOException ignored) {}
+        } catch (IOException ignored) {
+        }
     }
 
     public boolean isConfirmed() {

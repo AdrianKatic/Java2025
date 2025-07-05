@@ -1,5 +1,8 @@
 package com.dronesim.model;
 
+/**
+ * Represents type info like max speed and battery capacity.
+ */
 public class DroneType {
 
     private int id;

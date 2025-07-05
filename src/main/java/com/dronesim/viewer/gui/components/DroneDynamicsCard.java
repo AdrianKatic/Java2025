@@ -12,7 +12,11 @@ import javax.swing.border.LineBorder;
 
 import com.dronesim.model.DroneDynamics;
 
-public class DroneDynamicsCard extends JPanel{
+/**
+ * GUI card showing dynamics info for one drone.
+ */
+public class DroneDynamicsCard extends JPanel {
+
     private static final DecimalFormat BATTERY_FORMAT = new DecimalFormat("0");
 
     public DroneDynamicsCard(DroneDynamics dyn) {

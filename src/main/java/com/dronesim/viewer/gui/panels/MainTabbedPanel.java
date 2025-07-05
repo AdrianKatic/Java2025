@@ -5,8 +5,11 @@ import java.awt.BorderLayout;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
-
+/**
+ * Main tab view with dashboard, catalog, and dynamics tabs.
+ */
 public class MainTabbedPanel extends JPanel {
+
     private final JTabbedPane tabs;
     private final DynamicsPanel dynamicsPanel;
 

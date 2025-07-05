@@ -1,5 +1,8 @@
 package com.dronesim.model;
 
+/**
+ * Holds basic drone info like serial number and type.
+ */
 public class Drone {
 
     private int id;

@@ -11,7 +11,11 @@ import javax.swing.JPanel;
 import com.dronesim.model.DroneOverview;
 import com.dronesim.model.DroneType;
 
+/**
+ * Shows top 5 drones sorted by speed in a chart.
+ */
 public class TopSpeedRankingPanel extends JPanel {
+
     public TopSpeedRankingPanel() {
         setPreferredSize(new Dimension(300, 200));
         setBorder(BorderFactory.createTitledBorder("Top 5 Fastest Drones"));
@@ -23,8 +27,8 @@ public class TopSpeedRankingPanel extends JPanel {
                 try {
                     return new com.dronesim.api.DataFetcher().fetchAllDroneTypes();
                 } catch (Exception e) {
-                    e.printStackTrace(); 
-                    throw e; 
+                    e.printStackTrace();
+                    throw e;
                 }
             }
 
@@ -34,23 +38,27 @@ public class TopSpeedRankingPanel extends JPanel {
                     List<DroneType> droneTypeList = get();
 
                     removeAll();
-                    int[] rank = {1}; 
+                    int[] rank = {1};
                     droneTypeList.stream()
-                        .filter(o -> o != null && o.getMaxSpeed() > 0)
-                        .sorted((a, b) -> Double.compare(b.getMaxSpeed(), a.getMaxSpeed()))
-                        .limit(5)
-                        .forEachOrdered(o -> {
-                            String place = switch (rank[0]) {
-                                case 1 -> "1st Place";
-                                case 2 -> "2nd Place";
-                                case 3 -> "3rd Place";
-                                default -> rank[0] + "th Place";
-                            };
-                            String name = o.getTypename();
-                            String speed = o.getMaxSpeed() + " km/h";
-                            add(new JLabel(place + ": " + name + " - " + speed));
-                            rank[0]++;
-                        });
+                            .filter(o -> o != null && o.getMaxSpeed() > 0)
+                            .sorted((a, b) -> Double.compare(b.getMaxSpeed(), a.getMaxSpeed()))
+                            .limit(5)
+                            .forEachOrdered(o -> {
+                                String place = switch (rank[0]) {
+                                    case 1 ->
+                                        "1st Place";
+                                    case 2 ->
+                                        "2nd Place";
+                                    case 3 ->
+                                        "3rd Place";
+                                    default ->
+                                        rank[0] + "th Place";
+                                };
+                                String name = o.getTypename();
+                                String speed = o.getMaxSpeed() + " km/h";
+                                add(new JLabel(place + ": " + name + " - " + speed));
+                                rank[0]++;
+                            });
                     revalidate();
                     repaint();
                 } catch (Exception e) {
@@ -64,15 +72,15 @@ public class TopSpeedRankingPanel extends JPanel {
         setPreferredSize(new Dimension(300, 200));
         setBorder(BorderFactory.createTitledBorder("Top 5 Fastest Drones"));
         setLayout(new GridLayout(5, 1));
-        
+
         overviewList.stream()
-            .filter(o -> o.getDynamics() != null && o.getDynamics().getSpeed() > 0)
-            .sorted((a, b) -> Double.compare(b.getDynamics().getSpeed(), a.getDynamics().getSpeed()))
-            .limit(5)
-            .forEachOrdered(o -> {
-                String name = o.getType().getTypename();
-                String speed = o.getDynamics().getSpeed() + " km/h";
-                add(new JLabel(o+ " " +name + " - " + speed));
-            });
+                .filter(o -> o.getDynamics() != null && o.getDynamics().getSpeed() > 0)
+                .sorted((a, b) -> Double.compare(b.getDynamics().getSpeed(), a.getDynamics().getSpeed()))
+                .limit(5)
+                .forEachOrdered(o -> {
+                    String name = o.getType().getTypename();
+                    String speed = o.getDynamics().getSpeed() + " km/h";
+                    add(new JLabel(o + " " + name + " - " + speed));
+                });
     }
 }

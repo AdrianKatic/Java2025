@@ -11,9 +11,13 @@ import com.dronesim.model.Drone;
 import com.dronesim.viewer.gui.components.DashboardTable;
 import com.dronesim.viewer.gui.components.DroneStatusChartPanel;
 
+/**
+ * Shows dashboard with drone stats.
+ */
 public class DashboardController {
-   private final DashboardTable view;
-   private final DroneStatusChartPanel statusView;
+
+    private final DashboardTable view;
+    private final DroneStatusChartPanel statusView;
 
     public DashboardController(DashboardTable view, DroneStatusChartPanel statusView) {
         this.view = view;
@@ -35,10 +39,10 @@ public class DashboardController {
                     model.setRowCount(0);
                     for (Drone d : drones) {
                         model.addRow(new Object[]{
-                                d.getId(),
-                                d.getSerialNumber(),
-                                d.getCarriageWeight(),
-                                d.getCarriageType()
+                            d.getId(),
+                            d.getSerialNumber(),
+                            d.getCarriageWeight(),
+                            d.getCarriageType()
                         });
                     }
                 } catch (Exception e) {
@@ -48,14 +52,15 @@ public class DashboardController {
                 }
             }
         }.execute();
-    } 
+    }
 
     public void loadStatusCounts() {
-        new SwingWorker<int[],Void>() {
+        new SwingWorker<int[], Void>() {
             @Override
             protected int[] doInBackground() throws Exception {
                 return new DataFetcher().fetchAllDroneStatusCounts();
             }
+
             @Override
             protected void done() {
                 try {
@@ -68,5 +73,4 @@ public class DashboardController {
         }.execute();
     }
 
-    
 }

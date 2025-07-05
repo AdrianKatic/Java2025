@@ -7,7 +7,9 @@ import javax.swing.SwingUtilities;
 import com.dronesim.viewer.gui.dialogs.TokenLoginDialog;
 import com.dronesim.viewer.gui.frame.MainFrame;
 
-
+/**
+ * Starts the drone app.
+ */
 public class Main {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {

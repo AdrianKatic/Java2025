@@ -7,13 +7,22 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Properties;
 
+/**
+ * Stores base URL and token used for API requests.
+ */
 public class ApiConfig {
+
     private final String baseUrl;
     private final String token;
 
+    /**
+     * Loads API config from file.
+     */
     public ApiConfig() {
         try (InputStream in = getClass().getClassLoader().getResourceAsStream("config.properties")) {
-            if (in == null) throw new RuntimeException("config.properties not found");
+            if (in == null) {
+                throw new RuntimeException("config.properties not found");
+            }
             Properties props = new Properties();
             props.load(in);
 
@@ -28,7 +37,9 @@ public class ApiConfig {
         }
     }
 
-
+    /**
+     * Saves new config values to file and updates instance fields.
+     */
     public static void overrideAndSave(String baseUrl, String token) {
         Properties props = new Properties();
         Path configPath = Path.of("config.properties");
@@ -49,7 +60,17 @@ public class ApiConfig {
         }
     }
 
+    /**
+     * @return base API URL
+     */
+    public String getBaseUrl() {
+        return baseUrl;
+    }
 
-    public String getBaseUrl() { return baseUrl; }
-    public String getToken() { return token; }
+    /**
+     * @return authentication token
+     */
+    public String getToken() {
+        return token;
+    }
 }

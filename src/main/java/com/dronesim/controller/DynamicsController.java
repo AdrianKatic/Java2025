@@ -10,7 +10,11 @@ import com.dronesim.model.DroneDynamics;
 import com.dronesim.model.PagedDataProvider;
 import com.dronesim.viewer.gui.paging.DronePaginationView;
 
+/**
+ * Shows drone dynamics (single and all).
+ */
 public class DynamicsController {
+
     private PagedDataProvider<DroneDynamics> provider;
     private final DronePaginationView<DroneDynamics> view;
     private final int PAGE_SIZE = 10;
@@ -23,7 +27,7 @@ public class DynamicsController {
         this.provider = provider;
         this.view = view;
     }
-    
+
     public void setProvider(PagedDataProvider<DroneDynamics> provider) {
         this.provider = provider;
     }
@@ -56,7 +60,9 @@ public class DynamicsController {
                 }
                 try {
                     List<DroneDynamics> data = get();
-                    if (data.isEmpty() && page != 0) return;
+                    if (data.isEmpty() && page != 0) {
+                        return;
+                    }
                     view.updatePage(data, page, PAGE_SIZE);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -68,7 +74,9 @@ public class DynamicsController {
     }
 
     public void startAutoRefresh(int page) {
-        if (refreshTimer != null) refreshTimer.stop();
+        if (refreshTimer != null) {
+            refreshTimer.stop();
+        }
         currentPage = page;
         refreshTimer = new Timer(refreshIntervalMs, e -> loadPage(currentPage));
         refreshTimer.start();

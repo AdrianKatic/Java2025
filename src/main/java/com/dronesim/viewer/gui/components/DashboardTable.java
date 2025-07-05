@@ -8,7 +8,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
-public class DashboardTable extends JPanel{
+/**
+ * Builds a JTable to show drone overviews.
+ */
+public class DashboardTable extends JPanel {
 
     private final DefaultTableModel model;
     private final JTable table;
@@ -23,7 +26,7 @@ public class DashboardTable extends JPanel{
         table.setDefaultEditor(Object.class, null);
         add(new JScrollPane(table), BorderLayout.CENTER);
     }
-    
+
     public DefaultTableModel getModel() {
         return model;
     }

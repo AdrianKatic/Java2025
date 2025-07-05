@@ -1,9 +1,14 @@
 package com.dronesim.model;
 
-import com.dronesim.api.DataFetcher;
 import java.util.List;
 
+import com.dronesim.api.DataFetcher;
+
+/**
+ * Parses JSON into DroneDynamics objects.
+ */
 public class DroneDynamicsDataProvider implements PagedDataProvider<DroneDynamics> {
+
     private final DataFetcher fetcher = new DataFetcher();
     private final int droneId;
 

@@ -1,5 +1,8 @@
 package com.dronesim.model;
 
+/**
+ * Holds live data like battery, position, speed and status of a drone.
+ */
 public class DroneDynamics {
 
     private String drone;
@@ -42,11 +45,11 @@ public class DroneDynamics {
     public DroneDynamics() {
     }
 
-
     public String getDrone() {
         return drone;
     }
-       public void setDrone(String drone) {
+
+    public void setDrone(String drone) {
         this.drone = drone;
     }
 
@@ -137,8 +140,6 @@ public class DroneDynamics {
     public void setTypeName(String typeName) {
         this.typeName = typeName;
     }
-
-
 
     @Override
     public String toString() {

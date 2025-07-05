@@ -16,7 +16,9 @@ import com.dronesim.model.DroneDynamicsDataProvider;
 import com.dronesim.viewer.gui.components.DroneDynamicsCard;
 import com.dronesim.viewer.gui.paging.DronePaginationView;
 
-
+/**
+ * Panel for showing drone dynamics (all or single drone).
+ */
 public class DynamicsPanel extends JPanel implements DronePaginationView<DroneDynamics> {
 
     private final JPanel cardContainer;
@@ -52,14 +54,16 @@ public class DynamicsPanel extends JPanel implements DronePaginationView<DroneDy
         navControls.add(nextBtn);
 
         nav.add(navControls, BorderLayout.CENTER);
-        nav.add(lastUpdatedLabel, BorderLayout.EAST); 
+        nav.add(lastUpdatedLabel, BorderLayout.EAST);
 
         add(nav, BorderLayout.SOUTH);
 
-        controller = new DynamicsController(null, this); 
+        controller = new DynamicsController(null, this);
 
         prevBtn.addActionListener(e -> {
-            if (currentPage > 0) controller.loadPage(currentPage - 1);
+            if (currentPage > 0) {
+                controller.loadPage(currentPage - 1);
+            }
         });
         nextBtn.addActionListener(e -> controller.loadPage(currentPage + 1));
 

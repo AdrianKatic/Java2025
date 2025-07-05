@@ -9,7 +9,9 @@ import javax.swing.JPanel;
 
 import com.dronesim.model.Drone;
 
-
+/**
+ * Enum for drone weight categories.
+ */
 public class WeightCategory extends JPanel {
 
     public WeightCategory(List<Drone> drones) {
@@ -24,9 +26,13 @@ public class WeightCategory extends JPanel {
         for (Drone d : drones) {
             double gewicht = d.getCarriageWeight();
 
-            if (gewicht < 5.0) leicht++;
-            else if (gewicht <= 10.0) mittel++;
-            else schwer++;
+            if (gewicht < 5.0) {
+                leicht++;
+            } else if (gewicht <= 10.0) {
+                mittel++;
+            } else {
+                schwer++;
+            }
         }
 
         add(new JLabel("Lightweight (< 5 kg): " + leicht));

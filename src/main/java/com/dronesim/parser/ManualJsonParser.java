@@ -10,8 +10,10 @@ import com.dronesim.model.Drone;
 import com.dronesim.model.DroneDynamics;
 import com.dronesim.model.DroneType;
 
-
- public class ManualJsonParser implements DataProvider {
+/**
+ * Parses raw JSON manually into drone model objects.
+ */
+public class ManualJsonParser implements DataProvider {
 
     private static String extractResultsArray(String fullJson) {
         int idx = fullJson.indexOf("\"results\":");
@@ -128,7 +130,7 @@ import com.dronesim.model.DroneType;
         /*
          * @return first object form json
          */
-         
+
         String first = array.split("\\},\\s*\\{")[0]
                 .replaceAll("^[\\{\\s]+|[\\}\\s]+$", "");
         Map<String, String> map = toMap(first);
@@ -140,12 +142,11 @@ import com.dronesim.model.DroneType;
         if (array.isEmpty()) {
             return Map.of();
         }
-    
+
         String firstRaw = array.split("\\},\\s*\\{")[0]
                 .replaceAll("^[\\{\\s]+|[\\}\\s]+$", "");
         return toMap(firstRaw);
     }
-
 
     public Integer findDroneIdByType(String fullJson, int typeId) throws Exception {
         String array = extractResultsArray(fullJson);
@@ -157,9 +158,9 @@ import com.dronesim.model.DroneType;
             String clean = item.replaceAll("^[\\{\\s]+|[\\}\\s]+$", "");
             Map<String, String> map = toMap(clean);
             int droneId = Integer.parseInt(map.get("id"));
-            String typeUrl = map.get("dronetype"); 
+            String typeUrl = map.get("dronetype");
             int parsedTypeId = Integer.parseInt(
-                typeUrl.replaceAll(".*/(\\d+)/?$", "$1")
+                    typeUrl.replaceAll(".*/(\\d+)/?$", "$1")
             );
             if (parsedTypeId == typeId) {
                 return droneId;

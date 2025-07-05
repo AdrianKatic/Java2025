@@ -7,8 +7,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
-
+/**
+ * Scrollable table showing drone overviews with pagination.
+ */
 public class DroneTablePanel extends JPanel {
+
     private final JTable table;
     private final DefaultTableModel model;
 

@@ -17,32 +17,37 @@ import com.dronesim.model.DroneOverview;
 import com.dronesim.model.DroneType;
 import com.dronesim.parser.ManualJsonParser;
 
-
+/**
+ * Fetches and processes drone data from the API.
+ */
 public class DataFetcher {
+
     private final ApiClient client;
     private final ManualJsonParser parser;
     private static final Map<Integer, DroneType> typeCache = new HashMap<>();
 
+    /**
+     * Initializes client and parser.
+     */
     public DataFetcher() {
         ApiConfig cfg = new ApiConfig();
         this.client = new ApiClient(cfg);
         this.parser = new ManualJsonParser();
     }
 
-
-
-
-
+    /**
+     * Fetches paginated dynamics data with user confirmation.
+     */
     public void fetchDroneDynamicsWithPaginationConfirmation(int limit, int droneId) throws Exception {
         Scanner scanner = new Scanner(System.in);
-        try{
+        try {
             String path = "/api/" + droneId + "/dynamics/?limit=" + limit + "&offset=0";
 
             while (path != null) {
                 System.out.println("DEBUG " + path);
 
                 String json = client.getJson(path);
-                
+
                 parser.parseDynamics(json).forEach(System.out::println);
 
                 String nextRaw = new JSONObject(json).optString("next", null);
@@ -56,20 +61,22 @@ public class DataFetcher {
                         break;
                     }
                     URI nextUri = URI.create(nextRaw);
-                    String rel = nextUri.getPath() + (nextUri.getQuery() != null ? "?" + nextUri.getQuery():"");
+                    String rel = nextUri.getPath() + (nextUri.getQuery() != null ? "?" + nextUri.getQuery() : "");
                     System.out.println("Using relative path: " + rel);
                     path = rel;
                 }
-            }    
+            }
         } finally {
             scanner.close();
         }
     }
 
-
+    /**
+     * Gets drone dynamics and adds battery percent.
+     */
     public List<DroneDynamics> fetchDroneDynamics(int droneId, int limit, int offset) throws Exception {
         String dynJson = client.getJson(
-            "/api/" + droneId + "/dynamics/?limit=" + limit + "&offset=" + offset
+                "/api/" + droneId + "/dynamics/?limit=" + limit + "&offset=" + offset
         );
         List<DroneDynamics> list = parser.parseDynamics(dynJson);
         ensureTypeCache();
@@ -91,19 +98,23 @@ public class DataFetcher {
         return list;
     }
 
-
-
-
-
+    /**
+     * Same as above but simpler to call.
+     */
     public List<DroneDynamics> fetchDroneDynamicsForDrone(int droneId, int limit, int offset) throws Exception {
         return fetchDroneDynamics(droneId, limit, offset);
     }
 
+    /**
+     * Gets all drone types.
+     */
     public List<DroneType> fetchAllDroneTypes() throws Exception {
         return fetchAllItems("/api/dronetypes/", parser::parseDroneTypes);
     }
 
-
+    /**
+     * Gets all dynamics and adds type info + battery %.
+     */
     public List<DroneDynamics> fetchAllDroneDynamics(int limit, int offset) throws Exception {
         String path = "/api/dronedynamics/?limit=" + limit + "&offset=" + offset;
         String json = client.getJson(path);
@@ -142,7 +153,9 @@ public class DataFetcher {
         }
     }
 
-    
+    /**
+     * Gets all drones.
+     */
     public List<Drone> fetchAllDrones() throws Exception {
         return fetchAllItems("/api/drones/", parser::parseDrones);
     }
@@ -157,9 +170,13 @@ public class DataFetcher {
 
     @FunctionalInterface
     private interface ParserFunction<T, R> {
+
         R apply(T t) throws Exception;
     }
 
+    /**
+     * Combines drones, types and dynamics into overviews.
+     */
     public List<DroneOverview> fetchAllDroneOverviews() throws Exception {
         List<Drone> drones = fetchAllDrones();
         List<DroneDynamics> dynamics = fetchAllDroneDynamics(200, 0);
@@ -184,7 +201,7 @@ public class DataFetcher {
                 Drone d = droneMap.get(id);
                 if (d != null) {
                     DroneType type = typeMap.get(d.getDroneType());
-                    DroneOverview overview = new DroneOverview(d,type,dd);
+                    DroneOverview overview = new DroneOverview(d, type, dd);
                     overview.setId(d.getId());
                     overview.setSerialNumber(d.getSerialNumber());
                     overview.setCarriageWeight(d.getCarriageWeight());
@@ -202,25 +219,33 @@ public class DataFetcher {
         return result;
     }
 
+    /**
+     * Counts how many drones are ON, OFF, or have issues.
+     */
     public int[] fetchAllDroneStatusCounts() throws Exception {
         List<Drone> drones = fetchAllDrones();
 
-        int online  = 0;
+        int online = 0;
         int offline = 0;
-        int issue   = 0;
+        int issue = 0;
 
         for (Drone d : drones) {
             List<DroneDynamics> dyns = fetchDroneDynamicsForDrone(d.getId(), 1, 0);
-            if (dyns.isEmpty()) continue;
+            if (dyns.isEmpty()) {
+                continue;
+            }
             String status = dyns.get(0).getStatus();
             switch (status) {
-                case "ON" -> online++;
-                case "OF" -> offline++;
-                case "IS" -> issue++;
+                case "ON" ->
+                    online++;
+                case "OF" ->
+                    offline++;
+                case "IS" ->
+                    issue++;
             }
         }
 
-        return new int[]{ online, offline, issue };
+        return new int[]{online, offline, issue};
     }
 
 }

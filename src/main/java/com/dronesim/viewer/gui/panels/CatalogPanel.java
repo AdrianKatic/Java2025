@@ -8,7 +8,11 @@ import javax.swing.JScrollPane;
 import com.dronesim.controller.CatalogController;
 import com.dronesim.viewer.gui.components.DroneTablePanel;
 
+/**
+ * Shows the drone catalog (table + pagination).
+ */
 public class CatalogPanel extends JPanel {
+
     public CatalogPanel() {
         setLayout(new BorderLayout());
 

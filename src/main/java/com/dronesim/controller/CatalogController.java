@@ -10,18 +10,21 @@ import com.dronesim.api.DataFetcher;
 import com.dronesim.model.DroneType;
 import com.dronesim.viewer.gui.components.DroneTablePanel;
 
+/**
+ * Shows the catalog page with all drones.
+ */
 public class CatalogController {
+
     private final DroneTablePanel tablePanel;
 
     public CatalogController(DroneTablePanel tablePanel) {
         this.tablePanel = tablePanel;
     }
 
-    /** 
-     * Loads drone types in the background with Swingworker and fills the table with the results.
-     * Shows an error message if something goes wrong.
-    */
-
+    /**
+     * Loads drone types in the background with Swingworker and fills the table
+     * with the results. Shows an error message if something goes wrong.
+     */
     public void loadDroneTypes() {
         new SwingWorker<List<DroneType>, Void>() {
             @Override
@@ -48,8 +51,8 @@ public class CatalogController {
                     }
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(null,
-                        "Fehler beim Laden der DroneTypes:\n" + e.getMessage(),
-                        "Ladefehler", JOptionPane.ERROR_MESSAGE);
+                            "Fehler beim Laden der DroneTypes:\n" + e.getMessage(),
+                            "Ladefehler", JOptionPane.ERROR_MESSAGE);
                 }
             }
         }.execute();

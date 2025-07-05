@@ -12,10 +12,14 @@ import javax.swing.JPanel;
 import com.dronesim.api.DataFetcher;
 import com.dronesim.model.Drone;
 
+/**
+ * Dropdown for selecting a drone by ID.
+ */
 public class DroneIdSelector extends JPanel {
+
     private final JComboBox<String> combo = new JComboBox<>();
     private final DataFetcher fetcher = new DataFetcher();
-    private java.util.Map<String,Integer> serialToId = new java.util.HashMap<>();
+    private java.util.Map<String, Integer> serialToId = new java.util.HashMap<>();
 
     public DroneIdSelector(IntConsumer onLoad) {
         setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -27,6 +31,7 @@ public class DroneIdSelector extends JPanel {
             protected List<Drone> doInBackground() throws Exception {
                 return fetcher.fetchAllDrones();
             }
+
             @Override
             protected void done() {
                 try {
@@ -40,15 +45,15 @@ public class DroneIdSelector extends JPanel {
                     }
                     if (combo.getItemCount() == 0) {
                         JOptionPane.showMessageDialog(DroneIdSelector.this,
-                            "No Drone with DronetypeID in Database",
-                            "No Drones", JOptionPane.WARNING_MESSAGE);
+                                "No Drone with DronetypeID in Database",
+                                "No Drones", JOptionPane.WARNING_MESSAGE);
                         combo.setEnabled(false);
                     } else {
                         combo.setEnabled(true);
                     }
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(DroneIdSelector.this,
-                        "API-Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                            "API-Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         }.execute();
