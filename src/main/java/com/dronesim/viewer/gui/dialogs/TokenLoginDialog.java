@@ -23,7 +23,7 @@ public class TokenLoginDialog extends JDialog {
     private JTextField urlField;
     private JCheckBox saveBox;
     private boolean confirmed = false;
-    private static final String CONFIG_FILE = "src/main/resources/config.properties";
+    private static final String CONFIG_FILE = "config.properties";
 
     public TokenLoginDialog(JFrame parent) {
         super(parent, "Login - API", true);
@@ -71,9 +71,28 @@ public class TokenLoginDialog extends JDialog {
         add(inputPanel, BorderLayout.CENTER);
         add(btnPanel, BorderLayout.SOUTH);
 
+
         okBtn.addActionListener(e -> {
+            String token = getToken();
+            String url = getUrl();
+            if (token.isEmpty() || url.isEmpty()) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Token or URL not entered.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            // Test connection before closing dialog
+            try {
+                com.dronesim.api.ApiConfig testConfig = new com.dronesim.api.ApiConfig(url, token);
+                com.dronesim.api.ApiClient testClient = new com.dronesim.api.ApiClient(testConfig);
+                if (!testClient.testConnection()) {
+                    javax.swing.JOptionPane.showMessageDialog(this, "Connection failed: Invalid token or URL.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            } catch (Exception ex) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Connection failed: Invalid token or URL.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             confirmed = true;
-            if (saveBox.isSelected()) ApiConfig.overrideAndSave(getUrl(),getToken());
+            if (saveBox.isSelected()) ApiConfig.overrideAndSave(url, token);
             dispose();
         });
 

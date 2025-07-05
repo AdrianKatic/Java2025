@@ -16,14 +16,26 @@ public class Main {
                 JFrame frame = new JFrame();
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frame.setLocationRelativeTo(null);
+
                 TokenLoginDialog dialog = new TokenLoginDialog(frame);
                 dialog.setVisible(true);
 
-                String token = dialog.getToken();
-                String url = dialog.getUrl();
 
-                if (token == null || token.isEmpty() || url == null || url.isEmpty()) {
+                // Only continue if user confirmed the dialog
+                if (!dialog.isConfirmed()) {
+                    System.exit(0);
+                }
+                if (dialog.getToken().isEmpty() || dialog.getUrl().isEmpty()) {
                     JOptionPane.showMessageDialog(null, "Token or URL not entered.");
+                    System.exit(0);
+                }
+
+
+                // Test connection before opening main window
+                com.dronesim.api.ApiConfig config = new com.dronesim.api.ApiConfig();
+                com.dronesim.api.ApiClient client = new com.dronesim.api.ApiClient(config);
+                if (!client.testConnection()) {
+                    JOptionPane.showMessageDialog(null, "Connection failed: Invalid token or URL.");
                     System.exit(0);
                 }
 
