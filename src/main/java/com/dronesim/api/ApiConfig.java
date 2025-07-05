@@ -8,41 +8,35 @@ import java.nio.file.Path;
 import java.util.Properties;
 
 public class ApiConfig {
-
     private final String baseUrl;
     private final String token;
 
-    // Default: load from config.properties
     public ApiConfig() {
-        Properties props = new Properties();
-        Path configPath = Path.of("config.properties");
-        try (InputStream in = Files.newInputStream(configPath)) {
+        try (InputStream in = getClass().getClassLoader().getResourceAsStream("config.properties")) {
+            if (in == null) throw new RuntimeException("config.properties not found");
+            Properties props = new Properties();
             props.load(in);
-        } catch (Exception e) {
-            throw new RuntimeException("config.properties not found or error while loading configuration");
-        }
-        this.baseUrl = props.getProperty("api.baseUrl");
-        this.token = props.getProperty("api.token");
-        if (baseUrl == null || token == null) {
-            throw new RuntimeException("api.baseUrl or api.token missing in config.properties");
-        }
-    }
 
-    // New: construct directly
-    public ApiConfig(String baseUrl, String token) {
-        this.baseUrl = baseUrl;
-        this.token = token;
+            this.baseUrl = props.getProperty("api.baseUrl");
+            this.token = props.getProperty("api.token");
+
+            if (baseUrl == null || token == null) {
+                throw new RuntimeException("api.baseUrl or api.token missing in config.properties");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error while loading configuration");
+        }
     }
 
 
     public static void overrideAndSave(String baseUrl, String token) {
         Properties props = new Properties();
-        Path configPath = Path.of("config.properties");
+        Path configPath = Path.of("src/main/resources/config.properties");
 
         try (InputStream in = Files.newInputStream(configPath)) {
             props.load(in);
         } catch (IOException e) {
-            // Datei existiert nicht, ignoriere
+            System.err.println("Konnte bestehende Konfiguration nicht laden: " + e.getMessage());
         }
 
         props.setProperty("api.baseUrl", baseUrl);
