@@ -31,12 +31,12 @@ public class ApiConfig {
 
     public static void overrideAndSave(String baseUrl, String token) {
         Properties props = new Properties();
-        Path configPath = Path.of("src/main/resources/config.properties");
+        Path configPath = Path.of("config.properties");
 
         try (InputStream in = Files.newInputStream(configPath)) {
             props.load(in);
         } catch (IOException e) {
-            System.err.println("Konnte bestehende Konfiguration nicht laden: " + e.getMessage());
+            // Datei existiert nicht, ignoriere
         }
 
         props.setProperty("api.baseUrl", baseUrl);
